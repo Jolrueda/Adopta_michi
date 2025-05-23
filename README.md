@@ -60,7 +60,7 @@ Adopta_michi/
 - El proyecto está listo para escalar y agregar nuevas funcionalidades.
 
 ## Créditos
-Desarrollado por [Tu Nombre] para la asignatura Desarrollo Web 1.
+Desarrollado por Julian Orozco Vanegas, Duvan Arley Bolivar David y Jose Luis Rueda Mayorga para la asignatura Desarrollo Web 1.
 
 ---
 ¡Adopta, no compres! 🐾
