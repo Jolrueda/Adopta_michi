@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
-import type { Tab } from './types';
+import type { Tab } from '../../types/Auth/AuthTypes';
 
 const AuthLayout: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('register');
@@ -27,5 +27,6 @@ const AuthLayout: React.FC = () => {
     </div>
   );
 };
+
 
 export default AuthLayout;

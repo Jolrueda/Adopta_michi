@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { LoginData } from './types';
+import type { LoginData } from '../../types/Auth/AuthTypes';
 import { AiTwotoneMail } from "react-icons/ai";
 import { FaLock } from "react-icons/fa6";
 
