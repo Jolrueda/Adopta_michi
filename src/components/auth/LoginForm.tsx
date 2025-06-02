@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { LoginData } from './types';
 import { loginUser } from '../../utils/db';
 import { AiTwotoneMail } from "react-icons/ai";
@@ -7,14 +8,22 @@ import { FaLock } from "react-icons/fa6";
 const LoginForm: React.FC = () => {
     const [data, setData] = useState<LoginData>({ email: '', password: '' });
     const [error, setError] = useState<string | null>(null);
-    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar contraseña
+    const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate(); // Hook para redirigir
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null); // Reiniciar error
+
         try {
             const user = await loginUser(data.email, data.password);
-            alert(`¡Bienvenido, ${user.fullName}!`);
-            // Aquí puedes redirigir a la página principal si usas react-router
+
+            if (user.type === "regular") {
+                navigate("/visualizacion/MainPage"); // Redirige a MainPage
+            } else {
+                // Aquí se debe redirigir a una página de administración
+                alert("Ingreso como admin (Debe redirigir a una página de admin)");
+            }
         } catch (err) {
             setError((err as Error).message);
         }

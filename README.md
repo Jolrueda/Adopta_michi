@@ -24,7 +24,7 @@ Adopta_michi/
 │   │   │   ├── RegisterForm.tsx
 │   │   │   ├── LoginForm.tsx
 │   │   │   ├── types.ts
-│   │   │   └── index.tsx
+│   │   │   └── MainPage.tsx
 │   │   └── visualizacion/
 │   ├── App.tsx
 │   └── main.tsx

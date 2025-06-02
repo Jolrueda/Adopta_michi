@@ -6,10 +6,11 @@ import { FaLock } from "react-icons/fa6";
 import { registerUser } from '../../utils/db';
 
 const RegisterForm: React.FC = () => {
-  const [data, setData] = useState<RegisterData>({ fullName: '', email: '', password: '' });
+  const [data, setData] = useState<RegisterData>({ fullName: '', email: '', password: '', type: 'regular' });
   const [errors, setErrors] = useState<Partial<RegisterData>>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar contraseña
+  const [showPassword, setShowPassword] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false); // Estado para checkbox de admin
 
   const validate = (): boolean => {
     const errs: Partial<RegisterData> = {};
@@ -24,15 +25,16 @@ const RegisterForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccessMessage(null); // limpiar mensaje previo
+    setSuccessMessage(null);
     if (!validate()) return;
 
     try {
-      await registerUser(data);
+      await registerUser({ ...data, type: isAdmin ? 'admin' : 'regular' });
       setSuccessMessage('¡Registro exitoso! Ahora puedes iniciar sesión.');
-      setData({ fullName: '', email: '', password: '' });
+      setData({ fullName: '', email: '', password: '', type: 'regular' });
       setErrors({});
-      setShowPassword(false); // opcional: resetear checkbox
+      setShowPassword(false);
+      setIsAdmin(false); // Resetear checkbox
     } catch (err) {
       setErrors(prev => ({ ...prev, email: (err as Error).message }));
     }
@@ -43,7 +45,7 @@ const RegisterForm: React.FC = () => {
         {successMessage && <p className="text-sm text-green-600 mb-4">{successMessage}</p>}
 
         <div className="mb-4">
-          <label className="block text-black font-semibold mb-1 bold">Nombre completo</label>
+          <label className="block text-black font-semibold mb-1">Nombre completo</label>
           <div className="relative">
             <span className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400">
               <FaUser />
@@ -93,6 +95,19 @@ const RegisterForm: React.FC = () => {
           {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password}</p>}
         </div>
 
+        <div className="mb-1 flex items-center">
+          <input
+              type="checkbox"
+              id="isAdmin"
+              checked={isAdmin}
+              onChange={() => setIsAdmin(!isAdmin)}
+              className="mr-2"
+          />
+          <label htmlFor="isAdmin" className="text-black select-none cursor-pointer">
+            Registrarse como usuario admin
+          </label>
+        </div>
+
         <div className="mb-6 flex items-center">
           <input
               type="checkbox"
@@ -108,7 +123,7 @@ const RegisterForm: React.FC = () => {
 
         <button
             type="submit"
-            className="w-full bg-purple-500 text-white py-2 rounded-lg hover:font-semibold hover:bg-purple-800 transition"
+            className="w-full bg-purple-600 text-white py-2 rounded-lg hover:font-semibold hover:bg-purple-800 transition"
         >
           Registrarse
         </button>
