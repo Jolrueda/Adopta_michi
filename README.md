@@ -23,9 +23,20 @@ Adopta_michi/
 │   │   │   ├── AuthLayout.tsx
 │   │   │   ├── RegisterForm.tsx
 │   │   │   ├── LoginForm.tsx
-│   │   │   ├── types.ts
-│   │   │   └── index.tsx
+│   │   │   ├── index.tsx
+│   │   │   └── types.ts
+│   │   └── general/
+│   │   │   └── Banner.tsx
 │   │   └── visualizacion/
+│   │   │   ├── CatList.tsx
+│   │   │   ├── FilterBar.tsx
+│   │   │   ├── MainPage.tsx
+│   │   │   ├── Pagination.tsx
+│   │   │   └── types.ts
+│   ├── data/
+│   │   └── data.json
+│   ├── utils/
+│   │   └── db.ts
 │   ├── App.tsx
 │   └── main.tsx
 ├── package.json
@@ -46,7 +57,11 @@ Adopta_michi/
    ```sh
    npm run dev
    ```
-4. Abre tu navegador en `http://localhost:5173` (o el puerto que indique la terminal).
+4. Abre otra terminal e inicia JSON Server para simular el backend
+   ```sh
+   npm run start:json-server
+   ```
+5. Abre tu navegador en `http://localhost:5173` (o el puerto que indique la terminal).
 
 ## Dependencias principales
 - React
@@ -54,6 +69,7 @@ Adopta_michi/
 - Tailwind CSS
 - React Icons
 - Vite
+- JSON Server
 
 ## Notas
 - El registro solo permite correos institucionales (@unal.edu.co).

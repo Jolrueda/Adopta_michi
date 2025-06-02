@@ -1,31 +1,15 @@
-//import { useState } from 'react'
-import Auth from './components/auth'
-import CatProfile from './components/CatProfile'
-// import milo1 from './images/Milo/milo1.jpg';
-// import milo2 from './images/Milo/sitesdefaultfilesstylessquare_medium_440x440public2022-06Siamese201.jpg';
-// import milo3 from './images/Milo/milo3.jpeg';
-
-
-
-
-import './App.css'
+import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import Auth from './components/auth';
+import MainPage from './components/visualizacion/MainPage';
 
 function App() {
-
-  // const exampleImages = [
-  //   milo1,
-  //   milo2,
-  //   milo3,
-  // ];
-
-
-
-
-  return (
-    <>
-      
-    </>
-  )
+    return (
+        <Routes>
+            <Route path="/" element={<Auth />} />
+            <Route path="/visualizacion/MainPage" element={<MainPage />} />
+        </Routes>
+    );
 }
 
-export default App
+export default App;
