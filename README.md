@@ -57,7 +57,7 @@ Adopta_michi/
    ```sh
    npm run dev
    ```
-4. Inicia JSON Server para simular el backend
+4. Abre otra terminal e inicia JSON Server para simular el backend
    ```sh
    npm run start:json-server
    ```
