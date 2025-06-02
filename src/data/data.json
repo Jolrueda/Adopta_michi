@@ -1,0 +1,82 @@
+{
+  "users": [
+    {
+      "id": "97b0",
+      "fullName": "Julian",
+      "email": "julian@unal.edu.co",
+      "password": "Test1234.",
+      "type": "regular"
+    },
+    {
+      "id": "4e2e",
+      "fullName": "admin",
+      "email": "admin@unal.edu.co",
+      "password": "Test1234.",
+      "type": "admin"
+    }
+  ],
+  "gatos":[
+    {
+      "id_gato": 1,
+      "nombre": "Michi",
+      "edad": 2,
+      "descripcion": "Gato juguetón y amigable.",
+      "estado": "Bueno",
+      "fecha_ingreso": "2023-05-10",
+      "imagen": "https://media.istockphoto.com/id/1443562748/es/foto/lindo-gato-de-jengibre.jpg?s=612x612&w=0&k=20&c=JVC5Z3LxpaTQaXu_fMZjIb73r39z6b0SnAxvNI8iZG0="},
+    {
+      "id_gato": 2,
+      "nombre": "Luna",
+      "edad": 1,
+      "descripcion": "Gata tímida pero cariñosa.",
+      "estado": "Regular",
+      "fecha_ingreso": "2023-06-15",
+      "imagen": "https://img.freepik.com/fotos-premium/bobtail-kuriliano-joven-aislado-blanco_87557-18577.jpg?semt=ais_items_boosted&w=740"
+    },
+    {
+      "id_gato": 3,
+      "nombre": "Simba",
+      "edad": 3,
+      "descripcion": "Curioso y explorador.",
+      "estado": "Regular",
+      "fecha_ingreso": "2023-07-20",
+      "imagen": "https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_1280.jpg"
+    },
+    {
+      "id_gato": 4,
+      "nombre": "Nina",
+      "edad": 4,
+      "descripcion": "Independiente pero leal.",
+      "estado": "Critico",
+      "fecha_ingreso": "2023-08-05",
+      "imagen": "https://cdn.pixabay.com/photo/2014/11/30/14/11/cat-551554_1280.jpg"
+    },
+    {
+      "id_gato": 5,
+      "nombre": "Tom",
+      "edad": 0,
+      "descripcion": "Pequeño y travieso.",
+      "estado": "Regular",
+      "fecha_ingreso": "2023-09-10",
+      "imagen": "https://img.freepik.com/psd-gratis/hermoso-gato-retrato-aislado_23-2150186007.jpg?semt=ais_hybrid&w=740"
+    },
+    {
+      "id_gato": 6,
+      "nombre": "Milo",
+      "edad": 1,
+      "descripcion": "Cariñoso y dormilón.",
+      "estado": "Bueno",
+      "fecha_ingreso": "2023-10-01",
+      "imagen": "https://okdiario.com/img/2021/04/20/curiosidades-sobre-los-gatos-domesticos.jpg"
+    },
+    {
+      "id_gato": 7,
+      "nombre": "Ashe",
+      "edad": 1,
+      "descripcion": "Lindo.",
+      "estado": "Regular",
+      "fecha_ingreso": "2023-10-01",
+      "imagen": "https://img.freepik.com/psd-gratis/hermoso-gato-retrato-aislado_23-2150186058.jpg?semt=ais_items_boosted&w=740"
+    }
+  ]
+}
