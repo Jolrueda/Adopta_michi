@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import { updateCatAvailability } from '../../utils/db';
-import Breadcrumb from "./Breadcrumb"
 import { IoReturnDownBackOutline, IoPersonOutline, IoCallOutline, IoMailOutline } from "react-icons/io5";
 
 interface AdoptionFormProps {
@@ -69,8 +68,6 @@ const AdoptionForm: React.FC<AdoptionFormProps> = ({ catId, onClose, onSuccess})
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      {/* Breadcrumb */}
-      <Breadcrumb />
 
       {/* Título */}
       <h1 className="text-3xl font-semibold mb-6">Solicitud de adopción</h1>
