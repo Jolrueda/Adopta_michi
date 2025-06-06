@@ -1,9 +1,6 @@
 import React, { type ChangeEvent } from "react";
+import type { FilterBarProps } from "../../types/visualizacion/FilterBarProps";
 
-interface FilterBarProps {
-    onFilterChange: (newFilters: { nombre: string; minAge: string; maxAge: string; estado: string }) => void;
-    filters: { nombre: string; minAge: string; maxAge: string; estado: string };
-}
 
 const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange }) => {
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

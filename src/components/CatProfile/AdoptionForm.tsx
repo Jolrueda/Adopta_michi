@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+import { updateCatAvailability } from '../../utils/db';
 import Breadcrumb from "./Breadcrumb"
 import { IoReturnDownBackOutline, IoPersonOutline, IoCallOutline, IoMailOutline } from "react-icons/io5";
 
 interface AdoptionFormProps {
+  catId: string;
   onClose?: () => void;
   onSuccess?: () => void;
+  status: string; 
 }
 
-const AdoptionForm: React.FC<AdoptionFormProps> = ({ onClose, onSuccess }) => {
+const AdoptionForm: React.FC<AdoptionFormProps> = ({ catId, onClose, onSuccess}) => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -15,6 +18,7 @@ const AdoptionForm: React.FC<AdoptionFormProps> = ({ onClose, onSuccess }) => {
     message: ''
   });
   const [emailError, setEmailError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -33,7 +37,7 @@ const AdoptionForm: React.FC<AdoptionFormProps> = ({ onClose, onSuccess }) => {
     return email.endsWith('@unal.edu.co');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validar correo
@@ -42,12 +46,26 @@ const AdoptionForm: React.FC<AdoptionFormProps> = ({ onClose, onSuccess }) => {
       return;
     }
     
-    // Si todo está bien, llamar onSuccess
-    console.log('Formulario enviado:', formData);
-    if (onSuccess) {
-      onSuccess();
+    setIsLoading(true);
+    
+    try {
+      // Actualizar la disponibilidad del gato a "En proceso de adopción"
+      await updateCatAvailability(catId, 'adoptado');
+      
+     
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error) {
+      console.error('Error al actualizar la disponibilidad:', error);
+      alert('Hubo un error al procesar tu solicitud. Por favor intenta de nuevo.');
+    } finally {
+      setIsLoading(false);
     }
   };
+
+
+
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -155,8 +173,9 @@ const AdoptionForm: React.FC<AdoptionFormProps> = ({ onClose, onSuccess }) => {
             <button
               type="submit"
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg w-full sm:w-auto transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              disabled={isLoading}
             >
-              Enviar solicitud
+              {isLoading ? 'Enviando...' : 'Enviar solicitud'}
             </button>
             {/* Botón para volver (opcional) */}
             {onClose && (

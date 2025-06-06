@@ -7,4 +7,6 @@ export type Cat = {
     fecha_ingreso: string;
     condicion: string;
     imagen: string;
+    imagen2?: string;
+    imagen3?: string;
 };

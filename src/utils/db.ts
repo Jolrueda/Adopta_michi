@@ -1,4 +1,5 @@
-import type { User } from '../components/auth/types.ts';
+import type { User } from '../types/Auth/AuthTypes';
+
 
 const BASE_URL_USERS = 'http://localhost:3001/users';
 const BASE_URL_CATS = 'http://localhost:3001/gatos';
@@ -54,7 +55,10 @@ export type Cat = {
     estado: 'Bueno' | 'Regular' | 'Critico';
     fecha_ingreso: string;
     condicion: string;
+    disponibilidad: string;
     imagen: string;
+    imagen2?: string;
+    imagen3?: string;
 };
 
 
@@ -67,13 +71,34 @@ export const fetchCats = async (): Promise<Cat[]> => {
 
     // Mapear data para que cumpla con el tipo Cat
     return data.map((cat: any) => ({
-        id: String(cat.id_gato),
+        id: String(cat.id || cat.id_gato),
         nombre: cat.nombre,
         edad: cat.edad,
         descripcion: cat.descripcion,
         estado: cat.estado,
         fecha_ingreso: cat.fecha_ingreso,
-        condicion: cat.estado,
+        condicion: cat.condicion,
+        disponibilidad: cat.disponibilidad,
         imagen: cat.imagen,
+        imagen2: cat.imagen2,
+        imagen3: cat.imagen3,
     }));
 };
+
+export const updateCatAvailability = async (catId: string, disponibilidad: string): Promise<Cat> => {
+    const response = await fetch(`${BASE_URL_CATS}/${catId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ disponibilidad }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al actualizar la disponibilidad del gato.');
+    }
+
+    return response.json();
+};
+
+

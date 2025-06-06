@@ -1,6 +1,7 @@
 interface PageHeaderProps {
     title: string;
-    status: 'Disponible' | 'No disponible' | 'Adoptado';
+    clickbutton: () => void;
+    status: string;
 }
 
 export type { PageHeaderProps };

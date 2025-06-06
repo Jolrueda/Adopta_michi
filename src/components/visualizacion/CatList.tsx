@@ -1,17 +1,18 @@
 import React from "react";
-import type { Cat } from "./types";
+import type { CatListProps } from "../../types/visualizacion/CatlistProps";
 
-interface CatListProps {
-    cats: Cat[];
-}
-
-const CatList: React.FC<CatListProps> = ({ cats }) => {
+const CatList: React.FC<CatListProps> = ({ cats, onSelectCat }) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {cats.map((cat) => (
                 <div
                     key={cat.id}
-                    className="rounded-lg shadow-md flex"
+                    className="rounded-lg shadow-md flex cursor-pointer hover:shadow-xl transition-shadow duration-300"
+                    onClick={() => onSelectCat(cat)}
+                    tabIndex={0}
+                    onKeyPress={(e) => { if (e.key === 'Enter') onSelectCat(cat); }}
+                    role="button"
+                    aria-label={`Ver perfil de ${cat.nombre}`}
                 >
                     {/* Columna izquierda - 1/3 */}
                     <div className="w-1/3 bg-gray-100 p-4 flex flex-col justify-center pr-2">

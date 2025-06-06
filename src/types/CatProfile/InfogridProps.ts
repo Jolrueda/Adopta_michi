@@ -3,7 +3,7 @@ interface InfoGridProps {
     health: string;
     description: {
       title: string;
-      subtitle: string;
+      subtitle?: string;
     };
     medicalConditions: {
       title: string;

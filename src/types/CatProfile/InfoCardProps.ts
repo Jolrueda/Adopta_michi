@@ -1,7 +1,7 @@
 interface InfoCardProps {
     icon?: React.ReactNode;
     title: string;
-    value: string;
+    value?: string;
     subtitle?: string;
   }
 

@@ -45,16 +45,14 @@ const InfoGrid: React.FC<InfoGridProps> = ({
   medicalConditions,
 }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-    <InfoCard icon={AgeIcon} title="Edad" value={age} />
-    <InfoCard icon={HealthIcon} title="Salud" value={health} />
+    <InfoCard icon={AgeIcon} title="Edad" subtitle={age} />
+    <InfoCard icon={HealthIcon} title="Salud" subtitle={health} />
     <InfoCard
-      title="Descripción"
-      value={description.title}
-      subtitle={description.subtitle}
+      title={description.title}
+      subtitle={description?.subtitle}
     />
     <InfoCard
       title="Condiciones médicas"
-      value={medicalConditions.title}
       subtitle={medicalConditions.subtitle}
     />
   </div>

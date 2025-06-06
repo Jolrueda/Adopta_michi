@@ -13,25 +13,43 @@
       "email": "admin@unal.edu.co",
       "password": "Test1234.",
       "type": "admin"
+    },
+    {
+      "id": "07b8",
+      "fullName": "jose ",
+      "email": "joruedam@unal.edu.co",
+      "password": "JOSEluis1318@",
+      "type": "regular"
     }
   ],
-  "gatos":[
+  "gatos": [
     {
       "id_gato": 1,
       "nombre": "Michi",
       "edad": 2,
       "descripcion": "Gato juguetón y amigable.",
       "estado": "Bueno",
+      "condicion": "Sin condiciones especiales",
+      "disponibilidad": "disponible",
       "fecha_ingreso": "2023-05-10",
-      "imagen": "https://media.istockphoto.com/id/1443562748/es/foto/lindo-gato-de-jengibre.jpg?s=612x612&w=0&k=20&c=JVC5Z3LxpaTQaXu_fMZjIb73r39z6b0SnAxvNI8iZG0="},
+      "imagen": "https://images.unsplash.com/photo-1697909256661-614f8a97b29f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDI3fHx8ZW58MHx8fHx8",
+      "imagen2": "https://cdn.pixabay.com/photo/2020/12/14/11/18/cat-5830641_1280.jpg",
+      "imagen3": "https://images.unsplash.com/photo-1610480842390-2fd7ffc80da4?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8eWVsbG93JTIwY2F0fGVufDB8fDB8fHww",
+      "id": "f65e"
+    },
     {
       "id_gato": 2,
       "nombre": "Luna",
       "edad": 1,
       "descripcion": "Gata tímida pero cariñosa.",
       "estado": "Regular",
+      "condicion": "Sin condiciones especiales",
+      "disponibilidad": "adoptado",
       "fecha_ingreso": "2023-06-15",
-      "imagen": "https://img.freepik.com/fotos-premium/bobtail-kuriliano-joven-aislado-blanco_87557-18577.jpg?semt=ais_items_boosted&w=740"
+      "imagen": "https://www.infobae.com/resizer/v2/DDBXRQXN4JGVVIIMGCTTQ3AI5Y.jpg?auth=166324b211b263f52e49c4a93d1038e12421c510921caa900c654a2b10fab810&smart=true&width=1200&height=1200&quality=85",
+      "imagen2": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjuAgyHhme66b_WC5CrMxvdrTWjHyRY6uZmuasRxSGpaOZTeXH5lMAVKdtGRlmpqSkhyM&usqp=CAU",
+      "imagen3": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzkM3jtcp06wyUtqfearhcZyKhFNRdCh3ChkGFo--iqr0tTkV1F-Oo_m60i9tX2D8axts&usqp=CAU",
+      "id": "6d26"
     },
     {
       "id_gato": 3,
@@ -39,8 +57,13 @@
       "edad": 3,
       "descripcion": "Curioso y explorador.",
       "estado": "Regular",
+      "condicion": "Sin condiciones especiales",
+      "disponibilidad": "disponible",
       "fecha_ingreso": "2023-07-20",
-      "imagen": "https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_1280.jpg"
+      "imagen": "https://lh3.googleusercontent.com/proxy/ztQ_uft71q98_WiYo9L0XC1sSoPlH_ciPPPADsbWbMs3QuIkvZZOgprM4jgyuOU4LmWMynmuQ0ri8raA5QHJzV1s2s4",
+      "imagen2": "https://petepua.com/wp-content/uploads/2023/02/gato-Curl-americano.-Laperm-cat.-razas-de-gatos.-razas-de-gatos-segun-FIFE.-petepua.jpg",
+      "imagen3": "https://cdn.wamiz.fr/cdn-cgi/image/format=auto,quality=80,width=532,height=532,fit=cover/animal/breed/pictures/666856791352f115722211.jpg",
+      "id": "bdb9"
     },
     {
       "id_gato": 4,
@@ -48,8 +71,13 @@
       "edad": 4,
       "descripcion": "Independiente pero leal.",
       "estado": "Critico",
+      "condicion": "Heterocromía",
+      "disponibilidad": "adoptado",
       "fecha_ingreso": "2023-08-05",
-      "imagen": "https://cdn.pixabay.com/photo/2014/11/30/14/11/cat-551554_1280.jpg"
+      "imagen": "https://vitalcan.es/wp-content/uploads/kitty-2903812_1280.jpg",
+      "imagen2": "https://images.ctfassets.net/denf86kkcx7r/6JC1x08Rgd6t5rYHs2Qyue/36717bfb27a29e772e38603f354355c1/gato_blanco_Photo_2.jpg?fit=fill&w=1024&q=80",
+      "imagen3": "https://cdn0.uncomo.com/es/posts/3/8/5/americano_de_pelo_corto_53583_1_600.webp",
+      "id": "92b8"
     },
     {
       "id_gato": 5,
@@ -57,8 +85,13 @@
       "edad": 0,
       "descripcion": "Pequeño y travieso.",
       "estado": "Regular",
+      "condicion": "Sin condiciones especiales",
+      "disponibilidad": "disponible",
       "fecha_ingreso": "2023-09-10",
-      "imagen": "https://img.freepik.com/psd-gratis/hermoso-gato-retrato-aislado_23-2150186007.jpg?semt=ais_hybrid&w=740"
+      "imagen": "https://lh3.googleusercontent.com/proxy/9pHFDeXLYU_m9LkI0PeYPfhbOxmFuQC3u8Wl8bnOJyTfZhd1Qe7tWNB_Gr61Z98dhOgPKqRUq8VbQ16Hxy4F8BURKMVuIOMfJho8NyozwvgyuEVVDA",
+      "imagen2": "https://media.graphassets.com/output=format:webp/0jK9PybzS76rYc1grsVm",
+      "imagen3": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1STSFAVYckTEOLW8Tch183jtJT_tGUxW45Q&s",
+      "id": "a342"
     },
     {
       "id_gato": 6,
@@ -66,8 +99,13 @@
       "edad": 1,
       "descripcion": "Cariñoso y dormilón.",
       "estado": "Bueno",
+      "condicion": "Sin condiciones especiales",
+      "disponibilidad": "adoptado",
       "fecha_ingreso": "2023-10-01",
-      "imagen": "https://okdiario.com/img/2021/04/20/curiosidades-sobre-los-gatos-domesticos.jpg"
+      "imagen": "https://www.purina.es/sites/default/files/styles/ttt_image_510/public/2024-02/sitesdefaultfilesstylessquare_medium_440x440public2022-06Siamese201.jpg?itok=j9A2IvjN",
+      "imagen2": "https://www.infobae.com/resizer/v2/EZSTXGDBEJGQFG3SDCFVSVY2N4.jpg?auth=1c2b2008fdd5b1b9d9dd56e34456a4a889b5841e79269b20abcb72dca1793a5f&smart=true&width=350&height=197&quality=85",
+      "imagen3": "https://mascotasonlineblog.wordpress.com/wp-content/uploads/2014/03/patyshibuya-com-br.jpg?w=300&h=225",
+      "id": "6a59"
     },
     {
       "id_gato": 7,
@@ -75,8 +113,13 @@
       "edad": 1,
       "descripcion": "Lindo.",
       "estado": "Regular",
+      "condicion": "Sin condiciones especiales",
+      "disponibilidad": "disponible",
       "fecha_ingreso": "2023-10-01",
-      "imagen": "https://img.freepik.com/psd-gratis/hermoso-gato-retrato-aislado_23-2150186058.jpg?semt=ais_items_boosted&w=740"
+      "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoef62aQjye60k_gnc2A2dugDoqLyGlrM-vvtBxHA30dftHPrg1ulnRi6sSkdeb6VQgr0&usqp=CAU",
+      "imagen2": "https://d2yoo3qu6vrk5d.cloudfront.net/pulzo-lite/images-resized/PP3133988A-h-o.jpg",
+      "imagen3": "https://blog.felinus.cl/wp-content/uploads/2022/12/gato-persa-2.png",
+      "id": "3639"
     }
   ]
 }
