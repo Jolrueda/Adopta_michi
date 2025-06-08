@@ -14,6 +14,10 @@ const Banner: React.FC = () => {
         navigate("/visualizacion/MainPage");
     };
 
+    const goToProfile = () => {
+        navigate("/perfil");
+    };
+
     return (
         <div className="flex justify-between items-center bg-purple-600 text-white p-4 rounded-lg shadow-md">
 
@@ -29,13 +33,20 @@ const Banner: React.FC = () => {
                 <h1 className="text-xl font-bold">ADOPTA UN MICHI</h1>
             </div>
 
-
-            <button
-                onClick={handleLogout}
-                className="bg-white text-purple-500 font-semibold px-4 py-2 rounded-lg shadow hover:bg-purple-100"
-            >
-                Cerrar sesión
-            </button>
+            <div className="flex items-center gap-4">
+                <button
+                    onClick={goToProfile}
+                    className="bg-purple-700 hover:bg-purple-800 text-white font-semibold px-4 py-2 rounded-lg shadow transition-colors duration-200"
+                >
+                    Mi Perfil
+                </button>
+                <button
+                    onClick={handleLogout}
+                    className="bg-white text-purple-500 font-semibold px-4 py-2 rounded-lg shadow hover:bg-purple-100"
+                >
+                    Cerrar sesión
+                </button>
+            </div>
         </div>
     );
 };

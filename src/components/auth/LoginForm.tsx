@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { LoginData } from './types';
+import type { LoginData } from '../../types/Auth/AuthTypes';
 import { loginUser } from '../../utils/db';
 import { AiTwotoneMail } from "react-icons/ai";
 import { FaLock } from "react-icons/fa6";

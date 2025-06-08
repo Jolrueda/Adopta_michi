@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Auth from './components/auth';
 import MainPage from './components/visualizacion/MainPage';
 import CatProfile from './components/CatProfile';
+import UserProfile from './components/UserPerfil';
 
 function App() {
     return (
@@ -10,6 +11,7 @@ function App() {
             <Route path="/" element={<Auth />} />
             <Route path="/visualizacion/MainPage" element={<MainPage />} />
             <Route path="/cat/:id" element={<CatProfile />} />
+            <Route path="/perfil" element={<UserProfile />} />
         </Routes>
     );
 }
