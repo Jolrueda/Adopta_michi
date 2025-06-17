@@ -4,6 +4,7 @@ import Auth from './components/auth';
 import MainPage from './components/visualizacion/MainPage';
 import CatProfile from './components/CatProfile';
 import UserProfile from './components/UserPerfil';
+import AdoptionRequestsPage from "./components/AdoptionRequests/AdoptionRequestsPage.tsx";
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
             <Route path="/visualizacion/MainPage" element={<MainPage />} />
             <Route path="/cat/:id" element={<CatProfile />} />
             <Route path="/perfil" element={<UserProfile />} />
+            <Route path="/solicitudes" element={<AdoptionRequestsPage />} />
         </Routes>
     );
 }
