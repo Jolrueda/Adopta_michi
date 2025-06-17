@@ -23,7 +23,21 @@ const CatList: React.FC<CatListProps> = ({ cats, onSelectCat }) => {
                             {cat.nombre}
                         </h3>
                         <p className="text-black">{cat.edad} años</p>
+
                         <p className="text-black italic">{cat.estado}</p>
+
+                        {/* Estado del gato con estilos dinámicos */}
+                        <p
+                            className={`text-sm font-semibold mt-2 ${
+                                cat.disponibilidad === "disponible"
+                                    ? "text-green-600"
+                                    : cat.disponibilidad === "en proceso"
+                                        ? "text-yellow-600"
+                                        : "text-red-600"
+                            }`}
+                        >
+                            {cat.disponibilidad.charAt(0).toUpperCase() + cat.disponibilidad.slice(1)}
+                        </p>
                     </div>
 
                     {/* Columna derecha - 2/3 */}

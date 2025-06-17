@@ -1,8 +1,9 @@
 import type { User } from '../types/Auth/AuthTypes';
-
+import type {Cat} from "../types/visualizacion/typesCat.ts";
 
 const BASE_URL_USERS = 'http://localhost:3001/users';
 const BASE_URL_CATS = 'http://localhost:3001/gatos';
+const BASE_URL_ADOPTION_REQUESTS = 'http://localhost:3001/adoptionRequests';
 
 export const getUsers = async (): Promise<User[]> => {
     const response = await fetch(BASE_URL_USERS);
@@ -47,20 +48,6 @@ export const loginUser = async (email: string, password: string): Promise<User> 
 };
 
 
-export type Cat = {
-    id: string;
-    nombre: string;
-    edad: number;
-    descripcion: string;
-    estado: 'Bueno' | 'Regular' | 'Critico';
-    fecha_ingreso: string;
-    condicion: string;
-    disponibilidad: string;
-    imagen: string;
-    imagen2?: string;
-    imagen3?: string;
-};
-
 
 export const fetchCats = async (): Promise<Cat[]> => {
     const response = await fetch(BASE_URL_CATS);
@@ -70,7 +57,7 @@ export const fetchCats = async (): Promise<Cat[]> => {
     const data = await response.json();
 
     // Mapear data para que cumpla con el tipo Cat
-    return data.map((cat: any) => ({
+    return data.map((cat: Cat) => ({
         id: String(cat.id || cat.id_gato),
         nombre: cat.nombre,
         edad: cat.edad,
@@ -101,4 +88,106 @@ export const updateCatAvailability = async (catId: string, disponibilidad: strin
     return response.json();
 };
 
+export const submitAdoptionRequest = async (request: {
+    id: string;
+    name: string;
+    phone: string;
+    email: string;
+    message: string;
+    status: string;
+}): Promise<void> => {
+    const response = await fetch(BASE_URL_ADOPTION_REQUESTS, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...request, status: 'pendiente' }), // Agregar status por defecto
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al enviar la solicitud de adopción.');
+    }
+};
+
+export const fetchAdoptionRequests = async (): Promise<{ id: string; catId: string; name: string; phone: string; email: string; message: string; status: string; }[]> => {
+    const response = await fetch(BASE_URL_ADOPTION_REQUESTS);
+    if (!response.ok) {
+        throw new Error('Error al obtener las solicitudes de adopción.');
+    }
+    return response.json();
+};
+
+
+
+export const filterPendingAdoptionRequests = (
+    requests: { id: string; catId: string;  name: string; phone: string; email: string; message: string; status: string }[]
+): { id: string; catId: string; name: string; phone: string; email: string; message: string; status: "pendiente" }[] => {
+    return requests
+        .filter((request) => request.status === "pendiente")
+        .map((request) => ({
+            ...request,
+            status: request.status as "pendiente", // Garantizamos que el tipo sea correcto
+        }));
+};
+
+export const filterHistoricalAdoptionRequests = (
+    requests: { id: string; catId: string; name: string; phone: string; email: string; message: string; status: string }[]
+): {
+    id: string;
+    catId: string;
+    name: string;
+    phone: string;
+    email: string;
+    message: string;
+    status: "aceptada" | "rechazada"
+}[] => {
+    return requests
+        .filter((request) => request.status === "aceptada" || request.status === "rechazada")
+        .map((request) => ({
+            ...request,
+            status: request.status as "aceptada" | "rechazada", // Garantizamos que el tipo sea correcto
+        }));
+};
+
+export const acceptAdoptionRequest = async (requestId: string, catId: string): Promise<void> => {
+    // Actualizar el estado de la solicitud a "aceptada"
+    const response = await fetch(`${BASE_URL_ADOPTION_REQUESTS}/${requestId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'aceptada' }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al aceptar la solicitud de adopción.');
+    }
+
+    // Cambiar la disponibilidad del gato a "adoptado"
+    await updateCatAvailability(catId, 'adoptado');
+};
+
+
+export const rejectAdoptionRequest = async (requestId: string, catId: string): Promise<void> => {
+    // Actualizar el estado de la solicitud a "rechazada"
+    const response = await fetch(`${BASE_URL_ADOPTION_REQUESTS}/${requestId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'rechazada' }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al rechazar la solicitud de adopción.');
+    }
+
+    // Cambiar la disponibilidad del gato a "disponible"
+    try {
+        await updateCatAvailability(catId, 'disponible');
+    } catch (error) {
+        console.error('Error al actualizar la disponibilidad del gato:', error);
+        throw new Error('No se pudo actualizar la disponibilidad del gato.');
+    }
+};
 
