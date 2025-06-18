@@ -5,6 +5,8 @@ import MainPage from './components/visualizacion/MainPage';
 import CatProfile from './components/CatProfile';
 import UserProfile from './components/UserPerfil';
 import AdoptionRequestsPage from "./components/AdoptionRequests/AdoptionRequestsPage.tsx";
+import Donacion from './components/Donaciones/Donacion';
+import CrearGato from './components/CrearGato/CrearGato.tsx';
 
 function App() {
     return (
@@ -14,6 +16,10 @@ function App() {
             <Route path="/cat/:id" element={<CatProfile />} />
             <Route path="/perfil" element={<UserProfile />} />
             <Route path="/solicitudes" element={<AdoptionRequestsPage />} />
+            <Route path="/donacion" element={<Donacion />} />
+            <Route path="/crear-gato" element={<CrearGato/>} />
+
+
         </Routes>
     );
 }

@@ -18,12 +18,8 @@ const LoginForm: React.FC = () => {
         try {
             const user = await loginUser(data.email, data.password);
 
-            if (user.type === "regular") {
-                navigate("/visualizacion/MainPage"); // Redirige a MainPage
-            } else {
-                // Aquí se debe redirigir a una página de administración
-                alert("Ingreso como admin (Debe redirigir a una página de admin)");
-            }
+            
+            navigate("/visualizacion/MainPage"); // Redirige a MainPage
         } catch (err) {
             setError((err as Error).message);
         }

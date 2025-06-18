@@ -34,6 +34,23 @@ export const registerUser = async (user: User): Promise<void> => {
     }
 };
 
+export const updateCat = async (catId: string, updatedCat: Partial<Cat>): Promise<Cat> => {
+    const response = await fetch(`${BASE_URL_CATS}/${catId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedCat),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Error al actualizar los datos del gato.');
+    }
+  
+    return response.json();
+  };
+  
+
 export const loginUser = async (email: string, password: string): Promise<User> => {
     const response = await fetch(`${BASE_URL_USERS}?email=${email}&password=${password}`);
     if (!response.ok) {
@@ -47,7 +64,19 @@ export const loginUser = async (email: string, password: string): Promise<User> 
     return users[0];
 };
 
-
+export const createCat = async (cat: Omit<Cat, 'id'>): Promise<Cat> => {
+    const response = await fetch(BASE_URL_CATS, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cat),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Error al crear el gato.');
+    }
+  
+    return response.json();
+  };
 
 export const fetchCats = async (): Promise<Cat[]> => {
     const response = await fetch(BASE_URL_CATS);

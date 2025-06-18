@@ -22,6 +22,13 @@ const Banner: React.FC = () => {
         navigate("/solicitudes");
     };
 
+    const goToDonacion = () => {
+        navigate("/donacion")
+    }
+    const goToCrearGato = () => {
+        navigate("/crear-gato");
+      };
+
     return (
         <div className="flex justify-between items-center bg-purple-600 text-white p-4 rounded-lg shadow-md">
             {/* Logo y título */}
@@ -52,11 +59,25 @@ const Banner: React.FC = () => {
                     Mi Perfil
                 </button>
                 <button
+                    onClick={goToCrearGato}
+                    className="bg-purple-700 hover:bg-purple-800 text-white font-semibold px-4 py-2 rounded-lg shadow transition-colors duration-200"
+                >
+                Crear Gato
+                </button>
+                <button
+                    onClick={goToDonacion}
+                    className="bg-purple-700 hover:bg-purple-800 text-white font-semibold px-4 py-2 rounded-lg shadow transition-colors duration-200"
+                >
+                    Donaciones
+                </button>
+                <button
                     onClick={handleLogout}
                     className="bg-white text-purple-500 font-semibold px-4 py-2 rounded-lg shadow hover:bg-purple-100"
                 >
                     Cerrar sesión
                 </button>
+
+
             </div>
         </div>
     );
