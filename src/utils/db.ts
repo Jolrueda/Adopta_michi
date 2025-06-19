@@ -1,5 +1,5 @@
 import type { User } from '../types/Auth/AuthTypes';
-
+import type { Cat } from '../types/visualizacion/typesCat';
 
 const BASE_URL_USERS = 'http://localhost:3001/users';
 const BASE_URL_CATS = 'http://localhost:3001/gatos';
@@ -34,32 +34,31 @@ export const registerUser = async (user: User): Promise<void> => {
 };
 
 export const loginUser = async (email: string, password: string): Promise<User> => {
-    const response = await fetch(`${BASE_URL_USERS}?email=${email}&password=${password}`);
-    if (!response.ok) {
-        throw new Error('Error al buscar usuario.');
-    }
+    console.log('loginUser: Intentando conectar a:', `${BASE_URL_USERS}?email=${email}&password=${password}`);
+    
+    try {
+        const response = await fetch(`${BASE_URL_USERS}?email=${email}&password=${password}`);
+        console.log('loginUser: Respuesta del servidor:', response.status, response.statusText);
+        
+        if (!response.ok) {
+            throw new Error('Error al buscar usuario.');
+        }
 
-    const users = await response.json();
-    if (users.length === 0) {
-        throw new Error('Correo o contraseña incorrectos.');
+        const users = await response.json();
+        console.log('loginUser: Usuarios encontrados:', users);
+        
+        if (users.length === 0) {
+            throw new Error('Correo o contraseña incorrectos.');
+        }
+        return users[0];
+    } catch (error) {
+        console.error('loginUser: Error de conexión:', error);
+        throw error;
     }
-    return users[0];
 };
 
 
-export type Cat = {
-    id: string;
-    nombre: string;
-    edad: number;
-    descripcion: string;
-    estado: 'Bueno' | 'Regular' | 'Critico';
-    fecha_ingreso: string;
-    condicion: string;
-    disponibilidad: string;
-    imagen: string;
-    imagen2?: string;
-    imagen3?: string;
-};
+
 
 
 export const fetchCats = async (): Promise<Cat[]> => {

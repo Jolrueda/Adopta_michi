@@ -20,12 +20,6 @@ export type User = {
   password: string;
   type: 'admin' | 'regular'; // distinguir roles
   createdAt: Date;
-  profilePicture?: string;
-  phoneNumber?: string;
-
-  // Estadísticas de administrador
-  adoptionsManaged?: number;
-  totalDonated?: number;
 };
 
 export type UserProfile = {

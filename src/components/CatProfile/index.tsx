@@ -28,6 +28,7 @@ const CatProfile: React.FC = () => {
           setCat(foundCat);
           setCurrentStatus(foundCat.disponibilidad)
           
+          
         }
       } catch (error) {
         console.error('Error al cargar el gato:', error);

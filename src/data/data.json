@@ -20,6 +20,30 @@
       "email": "joruedam@unal.edu.co",
       "password": "JOSEluis1318@",
       "type": "regular"
+    },
+    {
+      "id": "",
+      "fullName": "carlo",
+      "email": "cortizm@unal.edu.co",
+      "password": "JOSEluis1318@",
+      "type": "regular",
+      "createdAt": "2025-06-08T18:29:30.803Z"
+    },
+    {
+      "id": "c600",
+      "fullName": "f",
+      "email": "f@unal.edu.co",
+      "password": "JOSEluis1318@",
+      "type": "regular",
+      "createdAt": "2025-06-08T18:31:34.237Z"
+    },
+    {
+      "id": "22cL",
+      "fullName": "g",
+      "email": "k@unal.edu.co",
+      "password": "Test1234.",
+      "type": "regular",
+      "createdAt": "2025-06-08T18:35:45.722Z"
     }
   ],
   "gatos": [
@@ -58,7 +82,7 @@
       "descripcion": "Curioso y explorador.",
       "estado": "Regular",
       "condicion": "Sin condiciones especiales",
-      "disponibilidad": "disponible",
+      "disponibilidad": "adoptado",
       "fecha_ingreso": "2023-07-20",
       "imagen": "https://lh3.googleusercontent.com/proxy/ztQ_uft71q98_WiYo9L0XC1sSoPlH_ciPPPADsbWbMs3QuIkvZZOgprM4jgyuOU4LmWMynmuQ0ri8raA5QHJzV1s2s4",
       "imagen2": "https://petepua.com/wp-content/uploads/2023/02/gato-Curl-americano.-Laperm-cat.-razas-de-gatos.-razas-de-gatos-segun-FIFE.-petepua.jpg",

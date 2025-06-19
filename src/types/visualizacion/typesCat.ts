@@ -6,6 +6,7 @@ export type Cat = {
     estado: 'Bueno' | 'Regular' | 'Critico';
     fecha_ingreso: string;
     condicion: string;
+    disponibilidad: 'disponible' | 'adoptado';
     imagen: string;
     imagen2?: string;
     imagen3?: string;

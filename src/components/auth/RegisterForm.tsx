@@ -5,6 +5,16 @@ import { AiTwotoneMail } from "react-icons/ai";
 import { FaLock } from "react-icons/fa6";
 import { registerUser } from '../../utils/db';
 
+// Función para generar ID aleatorio de 4 caracteres
+const generateRandomId = (): string => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 4; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};
+
 const RegisterForm: React.FC = () => {
   const [data, setData] = useState<RegisterData>({ fullName: '', email: '', password: '', type: 'regular' });
   const [errors, setErrors] = useState<Partial<RegisterData>>({});
@@ -29,7 +39,8 @@ const RegisterForm: React.FC = () => {
     if (!validate()) return;
 
     try {
-      await registerUser({ ...data, type: isAdmin ? 'admin' : 'regular' });
+      const randomId = generateRandomId();
+      await registerUser({ ...data, type: isAdmin ? 'admin' : 'regular', id: randomId, createdAt: new Date() });
       setSuccessMessage('¡Registro exitoso! Ahora puedes iniciar sesión.');
       setData({ fullName: '', email: '', password: '', type: 'regular' });
       setErrors({});

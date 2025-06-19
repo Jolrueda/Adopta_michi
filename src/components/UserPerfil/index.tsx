@@ -2,43 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { UserProfile} from '../../types/Auth/AuthTypes';
 import EditProfileModal from './EditProfileModal';
+import BackButton from '../general/BackButton';
+
+//import UserInfo from '../UserInfo';
+
+import  { useAuth } from '../../contexts/AuthContext';
+
 
 const UserProfileComponent: React.FC = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserProfile| null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-
+  const { user: authUser } = useAuth();
   // Simular datos del usuario - en producción esto vendría de un contexto de autenticación o API
   useEffect(() => {
     // Verificar si el usuario está autenticado
-    const mockAuthCheck = () => {
-      // Simular verificación de autenticación
-      const isAuthenticated = true; // Esto vendría de tu sistema de auth
-      
-      if (!isAuthenticated) {
+   
+      if (authUser === null) {
+        console.log('UserProfile: No hay usuario autenticado, redirigiendo al login');
         navigate('/');
         return;
-      }
-
-      // Datos de ejemplo para diferentes tipos de usuario
-      const mockUser: UserProfile = { 
-        id: '1',
-        fullName: 'Nombre Apellido',
-        email: 'usuario@email.com',
-        profilePicture: 'https://via.placeholder.com/150x150/7C3AED/FFFFFF?text=USER',
-        type: 'admin', // Cambiar a 'regular' para probar usuario normal
-        createdAt: new Date('2022-03-12'),
-        adoptionsManaged: 42,
-        totalDonated: 3200
+      } 
+      console.log('UserProfile: authUser value:', authUser);
+      
+      // Convertir User a UserProfile y agregar campos adicionales
+      const userProfile: UserProfile = {
+        id: authUser.id,
+        fullName: authUser.fullName,
+        email: authUser.email,
+        type: authUser.type,
+        createdAt: authUser.createdAt,
+        profilePicture: undefined, // Por defecto sin foto de perfil (se puede agregar después)
+        // Para administradores, agregar estadísticas (en producción vendrían de la API)
+        adoptionsManaged: authUser.type === 'admin' ? 12 : undefined,
+        totalDonated: authUser.type === 'admin' ? 2500 : undefined,
       };
-
-      setUser(mockUser);
+      
+      setUser(userProfile);
       setIsLoading(false);
-    };
-
-    mockAuthCheck();
-  }, [navigate]);
+      console.log('Usuario cargado:', userProfile);
+    
+    
+  }, [navigate, authUser]);
 
   const handleEditProfile = () => {
     setIsEditingProfile(true);
@@ -62,13 +68,13 @@ const UserProfileComponent: React.FC = () => {
     console.log('Cambiar foto de perfil');
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  };
+  // const formatDate = (date: Date) => {
+  //   return date.toLocaleDateString('es-ES', {
+  //     day: '2-digit',
+  //     month: '2-digit',
+  //     year: 'numeric'
+  //   });
+  // };
 
   if (isLoading) {
     return (
@@ -84,6 +90,7 @@ const UserProfileComponent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 py-8 px-4 sm:px-6 lg:px-8">
+
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -124,6 +131,14 @@ const UserProfileComponent: React.FC = () => {
               </h2>
               <p className="text-gray-600 text-lg mb-4">{user.email}</p>
               
+              {/* User ID */}
+              <div className="mb-4">
+                <span className="inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                  <span className="text-xs">🆔</span>
+                  ID: {user.id}
+                </span>
+              </div>
+              
               {/* Admin Badge */}
               {user.type === 'admin' && (
                 <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-800 px-4 py-2 rounded-full mb-4">
@@ -134,51 +149,128 @@ const UserProfileComponent: React.FC = () => {
                   </span>
                 </div>
               )}
+
+              {/* Regular User Badge */}
+              {user.type === 'regular' && (
+                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full mb-4">
+                  <span className="text-xl">👤</span>
+                  <span className="font-semibold">Usuario Regular</span>
+                </div>
+              )}
               
-              <p className="text-gray-500">
+              {/* <p className="text-gray-500">
                 Miembro desde: {formatDate(user.createdAt)}
-              </p>
+              </p> */}
             </div>
 
-            {/* Admin Metrics */}
-            {user.type === 'admin' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-                {/* Adopciones Gestionadas */}
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 text-center border border-blue-200">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-4">
-                    <span className="text-2xl text-white">🏠</span>
+            {/* Complete User Information Card */}
+            <div className="bg-gray-50 rounded-xl p-6 mb-8">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">
+                📋 Información Completa del Perfil
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Basic Info */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                    <span className="text-2xl">🆔</span>
+                    <div>
+                      <p className="text-sm text-gray-500">ID de Usuario</p>
+                      <p className="font-medium text-gray-900">{user.id}</p>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                    Adopciones Gestionadas
-                  </h3>
-                  <p className="text-3xl font-bold text-blue-600 mb-1">
-                    {user.adoptionsManaged}
-                  </p>
-                  <p className="text-blue-600 text-sm">
-                    Total aprobadas: {user.adoptionsManaged}
-                  </p>
+                  
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                    <span className="text-2xl">👤</span>
+                    <div>
+                      <p className="text-sm text-gray-500">Nombre Completo</p>
+                      <p className="font-medium text-gray-900">{user.fullName}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                    <span className="text-2xl">📧</span>
+                    <div>
+                      <p className="text-sm text-gray-500">Email</p>
+                      <p className="font-medium text-gray-900">{user.email}</p>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Total Donado */}
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 text-center border border-green-200">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full mb-4">
-                    <span className="text-2xl text-white">💰</span>
+                {/* Additional Info */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                    <span className="text-2xl">🏷️</span>
+                    <div>
+                      <p className="text-sm text-gray-500">Tipo de Usuario</p>
+                      <p className="font-medium text-gray-900 capitalize">
+                        {user.type === 'admin' ? 'Administrador' : 'Usuario Regular'}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold text-green-900 mb-2">
-                    Total Donado
-                  </h3>
-                  <p className="text-3xl font-bold text-green-600 mb-1">
-                    ${user.totalDonated?.toLocaleString()}
-                  </p>
-                  <p className="text-green-600 text-sm">
-                    Tienes privilegios de gestión avanzados.
-                  </p>
+                  
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                    <span className="text-2xl">📅</span>
+                    <div>
+                      <p className="text-sm text-gray-500">Fecha de Registro</p>
+                      {/* <p className="font-medium text-gray-900">{formatDate(user.createdAt)}</p> */}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                    <span className="text-2xl">🖼️</span>
+                    <div>
+                      <p className="text-sm text-gray-500">Foto de Perfil</p>
+                      <p className="font-medium text-gray-900">
+                        {user.profilePicture ? 'Configurada' : 'No configurada'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            )}
+
+              
+
+              {/* Admin specific fields */}
+              {user.type === 'admin' && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+                    👑 Información de Administrador
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                      <span className="text-2xl">🏠</span>
+                      <div>
+                        <p className="text-sm text-gray-500">Adopciones Gestionadas</p>
+                        <p className="font-medium text-gray-900">
+                          {user.adoptionsManaged !== undefined ? user.adoptionsManaged : 'No disponible'}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                      <span className="text-2xl">💰</span>
+                      <div>
+                        <p className="text-sm text-gray-500">Total Donado</p>
+                        <p className="font-medium text-gray-900">
+                          {user.totalDonated !== undefined ? `$${user.totalDonated.toLocaleString()}` : 'No disponible'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  
+                </div>
+                
+              )}
+
+                  <div className=" p-5 flex justify-center"> 
+                    <BackButton onClick={() => navigate('/visualizacion/MainPage')} />
+                  </div>
+            </div>
 
             {/* Edit Profile Button */}
-            <div className="text-center">
+            {/* <div className="text-center">
               <button
                 onClick={handleEditProfile}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
@@ -186,30 +278,23 @@ const UserProfileComponent: React.FC = () => {
                 <span className="text-lg">✏️</span>
                 Editar Perfil
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
-
-        {/* Additional Info for Screen Readers */}
-        <div className="sr-only">
-          <p>
-            Perfil de usuario de {user.fullName}. 
-            {user.type === 'admin' 
-              ? `Rol: Administrador con ${user.adoptionsManaged} adopciones gestionadas y $${user.totalDonated} donados.`
-              : 'Rol: Usuario regular.'
-            }
-            Miembro desde {formatDate(user.createdAt)}.
-          </p>
-        </div>
+       
       </div>
 
-      {/* Edit Profile Modal */}
+      {/* Edit Profile Modal 
+      
       <EditProfileModal
         user={user}
         isOpen={isEditingProfile}
         onClose={handleCloseModal}
         onSave={handleSaveProfile}
       />
+      
+      */}
+      
     </div>
   );
 };
