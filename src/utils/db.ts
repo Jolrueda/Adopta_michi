@@ -62,14 +62,18 @@ export const loginUser = async (email: string, password: string): Promise<User> 
             throw new Error('Error al buscar usuario.');
         }
 
-    const users = await response.json();
-    if (users.length === 0) {
-        throw new Error('Correo o contraseña incorrectos.');
+        const users = await response.json();
+        if (users.length === 0) {
+            throw new Error('Correo o contraseña incorrectos.');
+        }
+        return users[0];
+    } catch (error) {
+        console.error('Error en loginUser:', error);
+        throw error;
     }
-    return users[0];
-};}
+};
 
-export const createCat = async (cat: Omit<Cat, 'id'>): Promise<Cat> => {
+export const createCat = async (cat: Omit<Cat, 'id' | 'id_gato'>): Promise<Cat> => {
     const response = await fetch(BASE_URL_CATS, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

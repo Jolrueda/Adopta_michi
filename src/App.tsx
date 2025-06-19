@@ -13,7 +13,7 @@ function App() {
     return (
         <AuthProvider>
             <Routes>
-            <Route path="/" element={<Auth />} />
+                <Route path="/" element={<Auth />} />
                 <Route path="/visualizacion/MainPage" element={<MainPage />} />
                 <Route path="/cat/:id" element={<CatProfile />} />
                 <Route path="/perfil" element={<UserProfile />} />

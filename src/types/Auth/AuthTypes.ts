@@ -18,19 +18,12 @@ export type User = {
   fullName: string;
   email: string;
   password: string;
-  type: 'admin' | 'regular'; // distinguir roles
-  createdAt: Date;
-};
-
-export type UserProfile = {
-  id: string;
-  fullName: string;
-  email: string;
-  profilePicture?: string;
   type: 'admin' | 'regular';
   createdAt: Date;
-  // Estadísticas de administrador
+  profilePicture?: string;
   adoptionsManaged?: number;
   totalDonated?: number;
 };
+
+
 

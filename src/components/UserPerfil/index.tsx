@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { UserProfile} from '../../types/Auth/AuthTypes';
-import EditProfileModal from './EditProfileModal';
+import type { User} from '../../types/Auth/AuthTypes';
+//import EditProfileModal from './EditProfileModal';
 import BackButton from '../general/BackButton';
 
 //import UserInfo from '../UserInfo';
@@ -11,7 +11,7 @@ import  { useAuth } from '../../contexts/AuthContext';
 
 const UserProfileComponent: React.FC = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<UserProfile| null>(null);
+  const [user, setUser] = useState<User| null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const { user: authUser } = useAuth();
@@ -27,16 +27,17 @@ const UserProfileComponent: React.FC = () => {
       console.log('UserProfile: authUser value:', authUser);
       
       // Convertir User a UserProfile y agregar campos adicionales
-      const userProfile: UserProfile = {
+      const userProfile: User = {
         id: authUser.id,
         fullName: authUser.fullName,
         email: authUser.email,
         type: authUser.type,
         createdAt: authUser.createdAt,
+        password: authUser.password,
         profilePicture: undefined, // Por defecto sin foto de perfil (se puede agregar después)
         // Para administradores, agregar estadísticas (en producción vendrían de la API)
-        adoptionsManaged: authUser.type === 'admin' ? 12 : undefined,
-        totalDonated: authUser.type === 'admin' ? 2500 : undefined,
+        adoptionsManaged: authUser.type === 'admin' ? 0: 0,
+        totalDonated: authUser.type === 'admin' ? 0 : 0,
       };
       
       setUser(userProfile);
@@ -50,7 +51,7 @@ const UserProfileComponent: React.FC = () => {
     setIsEditingProfile(true);
   };
 
-    const handleSaveProfile = (updatedUser: Partial<UserProfile>) => {
+    const handleSaveProfile = (updatedUser: Partial<User>) => {
     if (user) {
       setUser({ ...user, ...updatedUser });
       setIsEditingProfile(false);
@@ -232,22 +233,9 @@ const UserProfileComponent: React.FC = () => {
               
 
               {/* Admin specific fields */}
-              {user.type === 'admin' && (
+          
                 <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4 text-center">
-                    👑 Información de Administrador
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-                      <span className="text-2xl">🏠</span>
-                      <div>
-                        <p className="text-sm text-gray-500">Adopciones Gestionadas</p>
-                        <p className="font-medium text-gray-900">
-                          {user.adoptionsManaged !== undefined ? user.adoptionsManaged : 'No disponible'}
-                        </p>
-                      </div>
-                    </div>
-                    
+                  <div className="flex justify-center">
                     <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
                       <span className="text-2xl">💰</span>
                       <div>
@@ -258,11 +246,8 @@ const UserProfileComponent: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
-                  
                 </div>
-                
-              )}
+        
 
                   <div className=" p-5 flex justify-center"> 
                     <BackButton onClick={() => navigate('/visualizacion/MainPage')} />
@@ -284,16 +269,6 @@ const UserProfileComponent: React.FC = () => {
        
       </div>
 
-      {/* Edit Profile Modal 
-      
-      <EditProfileModal
-        user={user}
-        isOpen={isEditingProfile}
-        onClose={handleCloseModal}
-        onSave={handleSaveProfile}
-      />
-      
-      */}
       
     </div>
   );
