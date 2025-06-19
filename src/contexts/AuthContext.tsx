@@ -28,61 +28,50 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
 
-    // Cargar usuario del localStorage al inicializar
+    // Cargar usuario desde localStorage al iniciar
     useEffect(() => {
         const savedUser = localStorage.getItem('authUser');
-        console.log('AuthContext: Valor guardado en localStorage:', savedUser);
         if (savedUser) {
             try {
-                const parsedUser = JSON.parse(savedUser);
-                console.log('AuthContext: Usuario parseado:', parsedUser);
+                const parsedUser = JSON.parse(savedUser) as User;
                 setUser(parsedUser);
             } catch (error) {
-                console.error('Error al cargar usuario guardado:', error);
-                localStorage.removeItem('authUser');
+                console.error('Error al cargar usuario desde localStorage:', error);
+                localStorage.removeItem('authUser'); // Limpia datos corruptos
             }
-        } else {
-            console.log('AuthContext: No hay usuario guardado en localStorage');
-            // Usuario de prueba temporal para desarrollo
-            const testUser: User = {
-                id: '1',
-                fullName: 'Usuario de Prueba',
-                email: 'test@unal.edu.co',
-                password: '123456',
-                type: 'admin',
-                createdAt: new Date()
-            };
-            console.log('AuthContext: Estableciendo usuario de prueba:', testUser);
-            setUser(testUser);
         }
     }, []);
 
-    // Guardar usuario en localStorage cuando cambie
+    // Sincronizar usuario con localStorage al cambiar
     useEffect(() => {
-        console.log('AuthContext: Usuario cambió a:', user);
         if (user) {
-            localStorage.setItem('authUser', JSON.stringify(user));
-            console.log('AuthContext: Usuario guardado en localStorage');
+            const currentLocalStorageUser = localStorage.getItem('authUser');
+            const userString = JSON.stringify(user);
+            if (currentLocalStorageUser !== userString) {
+                localStorage.setItem('authUser', userString);
+            }
         } else {
             localStorage.removeItem('authUser');
-            console.log('AuthContext: Usuario removido del localStorage');
         }
     }, [user]);
 
+    // Cerrar sesión
     const logout = () => {
         setUser(null);
         localStorage.removeItem('authUser');
     };
 
-    const isAuthenticated = user !== null;
+    // Verificaciones
+    const isAuthenticated = Boolean(user);
     const isAdmin = user?.type === 'admin';
 
+    // Proveer valores al contexto
     const value: AuthContextType = {
         user,
         setUser,
         logout,
         isAuthenticated,
-        isAdmin
+        isAdmin,
     };
 
     return (
@@ -90,4 +79,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             {children}
         </AuthContext.Provider>
     );
-}; 
+};
