@@ -67,7 +67,7 @@ export const loginUser = async (email: string, password: string): Promise<User> 
         throw new Error('Correo o contraseña incorrectos.');
     }
     return users[0];
-};
+};}
 
 export const createCat = async (cat: Omit<Cat, 'id'>): Promise<Cat> => {
     const response = await fetch(BASE_URL_CATS, {
