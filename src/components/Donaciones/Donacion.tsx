@@ -33,11 +33,9 @@ const Donacion: React.FC = () => {
 
   const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-  
-    // Permitir número vacío o solo dígitos
     if (value === "" || /^[0-9]+$/.test(value)) {
       setCustomAmount(value);
-      setSelectedAmount(null); // Deselecciona botones predefinidos si escribe algo
+      setSelectedAmount(null);
       setErrorMonto("");
     }
   };
@@ -49,8 +47,7 @@ const Donacion: React.FC = () => {
       [name]: value,
     }));
   };
-  
-  
+
   const handleCancelar = () => {
     if (loading) return;
     setSelectedAmount(null);
@@ -62,12 +59,60 @@ const Donacion: React.FC = () => {
     setSuccess(false);
   };
 
+  // Algoritmo de Luhn
+  const validarTarjetaLuhn = (numero: string): boolean => {
+    const numeroReverso = numero.replace(/\D/g, "").split("").reverse();
+    let suma = 0;
+    for (let i = 0; i < numeroReverso.length; i++) {
+      let n = parseInt(numeroReverso[i]);
+      if (i % 2 === 1) {
+        n *= 2;
+        if (n > 9) n -= 9;
+      }
+      suma += n;
+    }
+    return suma % 10 === 0;
+  };
+
+  const validarFechaExpiracion = (fecha: string): boolean => {
+    const match = fecha.match(/^(\d{2})\/(\d{2})$/);
+    if (!match) return false;
+
+    const mes = parseInt(match[1], 10);
+    const anio = parseInt(`20${match[2]}`, 10);
+    if (mes < 1 || mes > 12) return false;
+
+    const ahora = new Date();
+    const fechaExp = new Date(anio, mes);
+    return fechaExp > ahora;
+  };
+
+  const esCVVValido = (cvv: string): boolean => {
+    return /^\d{3}$/.test(cvv);
+  };
+
   const validarDatosPago = (): boolean => {
     const { nombre, numeroTarjeta, fechaExpiracion, cvv } = datosPago;
     if (!nombre.trim() || !numeroTarjeta.trim() || !fechaExpiracion.trim() || !cvv.trim()) {
       setErrorPago("Por favor completa todos los campos del formulario de pago.");
       return false;
     }
+
+    if (numeroTarjeta.length !== 16 || !validarTarjetaLuhn(numeroTarjeta)) {
+      setErrorPago("El número de tarjeta no es válido.");
+      return false;
+    }
+
+    if (!validarFechaExpiracion(fechaExpiracion)) {
+      setErrorPago("La fecha de expiración no es válida o está vencida.");
+      return false;
+    }
+
+    if (!esCVVValido(cvv)) {
+      setErrorPago("El CVV debe tener exactamente 3 dígitos.");
+      return false;
+    }
+
     return true;
   };
 
@@ -82,7 +127,6 @@ const Donacion: React.FC = () => {
       setErrorMonto("Por favor ingresa un monto positivo.");
       return;
     }
-    setErrorMonto("");
 
     if (!validarDatosPago()) {
       return;
@@ -169,17 +213,26 @@ const Donacion: React.FC = () => {
             className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
             required
           />
-          <input
-            type="text"
-            name="numeroTarjeta"
-            placeholder="Número de tarjeta"
-            value={datosPago.numeroTarjeta}
-            onChange={handlePagoChange}
-            disabled={loading}
-            maxLength={16}
-            className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            required
-          />
+
+          <div className="relative">
+            <input
+              type="text"
+              name="numeroTarjeta"
+              placeholder="Número de tarjeta"
+              value={datosPago.numeroTarjeta}
+              onChange={handlePagoChange}
+              disabled={loading}
+              maxLength={16}
+              className="border border-gray-300 rounded-lg p-2 w-full pr-10 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+            />
+            {datosPago.numeroTarjeta.length === 16 && (
+              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xl">
+                {validarTarjetaLuhn(datosPago.numeroTarjeta) ? "✅" : "❌"}
+              </span>
+            )}
+          </div>
+
           <div className="flex gap-3">
             <input
               type="text"
@@ -204,6 +257,7 @@ const Donacion: React.FC = () => {
               required
             />
           </div>
+
           {errorPago && <p className="text-red-600 text-sm">{errorPago}</p>}
         </div>
 
@@ -233,3 +287,4 @@ const Donacion: React.FC = () => {
 };
 
 export default Donacion;
+
