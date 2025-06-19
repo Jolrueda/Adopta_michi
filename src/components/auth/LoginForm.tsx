@@ -26,12 +26,8 @@ const LoginForm: React.FC = () => {
             setUser(user);
             console.log('LoginForm: Usuario establecido en contexto');
 
-            if (user.type === "regular") {
-                navigate("/visualizacion/MainPage"); // Redirige a MainPage
-            } else {
-                // Aquí se debe redirigir a una página de administración
-                alert("Ingreso como admin (Debe redirigir a una página de admin)");
-            }
+            
+            navigate("/visualizacion/MainPage"); // Redirige a MainPage
         } catch (err) {
             setError((err as Error).message);
         }

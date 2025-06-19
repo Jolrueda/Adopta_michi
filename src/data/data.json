@@ -1,79 +1,47 @@
 {
   "users": [
     {
-      "id": "97b0",
-      "fullName": "Julian",
+      "id": "93aa76fe-da2c-4bfc-b8da-05242388114a",
+      "fullName": "test1",
+      "email": "test@unal.edu.co",
+      "password": "Test1234.",
+      "type": "regular",
+      "createdAt": "2025-06-14T20:25:35.014Z"
+    },
+    {
+      "id": "1723068c-c7c3-41b0-9802-e486b52f9517",
+      "fullName": "julian",
       "email": "julian@unal.edu.co",
       "password": "Test1234.",
-      "type": "regular"
-    },
-    {
-      "id": "4e2e",
-      "fullName": "admin",
-      "email": "admin@unal.edu.co",
-      "password": "Test1234.",
-      "type": "admin"
-    },
-    {
-      "id": "07b8",
-      "fullName": "jose ",
-      "email": "joruedam@unal.edu.co",
-      "password": "JOSEluis1318@",
-      "type": "regular"
-    },
-    {
-      "id": "",
-      "fullName": "carlo",
-      "email": "cortizm@unal.edu.co",
-      "password": "JOSEluis1318@",
       "type": "regular",
-      "createdAt": "2025-06-08T18:29:30.803Z"
+      "createdAt": "2025-06-14T20:26:39.594Z",
+      "adoptionsManaged": 0,
+      "totalDonated": 0
     },
     {
-      "id": "c600",
-      "fullName": "f",
-      "email": "f@unal.edu.co",
-      "password": "JOSEluis1318@",
-      "type": "regular",
-      "createdAt": "2025-06-08T18:31:34.237Z"
-    },
-    {
-      "id": "22cL",
-      "fullName": "g",
-      "email": "k@unal.edu.co",
-      "password": "Test1234.",
-      "type": "regular",
-      "createdAt": "2025-06-08T18:35:45.722Z"
+      "id": "fc1d9c48-1594-4e1e-906e-2a377a62967b",
+      "fullName": "Arley",
+      "email": "dbolivard@unal.edu.co",
+      "password": "Btxtah46*.",
+      "type": "admin",
+      "createdAt": "2025-06-17T03:32:37.803Z",
+      "adoptionsManaged": 0,
+      "totalDonated": 0
     }
   ],
   "gatos": [
     {
-      "id_gato": 1,
-      "nombre": "Michi",
-      "edad": 2,
-      "descripcion": "Gato juguetón y amigable.",
-      "estado": "Bueno",
-      "condicion": "Sin condiciones especiales",
-      "disponibilidad": "disponible",
-      "fecha_ingreso": "2023-05-10",
-      "imagen": "https://images.unsplash.com/photo-1697909256661-614f8a97b29f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDI3fHx8ZW58MHx8fHx8",
-      "imagen2": "https://cdn.pixabay.com/photo/2020/12/14/11/18/cat-5830641_1280.jpg",
-      "imagen3": "https://images.unsplash.com/photo-1610480842390-2fd7ffc80da4?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8eWVsbG93JTIwY2F0fGVufDB8fDB8fHww",
-      "id": "f65e"
-    },
-    {
-      "id_gato": 2,
-      "nombre": "Luna",
+      "id": "6d26",
+      "nombre": "Sol",
       "edad": 1,
       "descripcion": "Gata tímida pero cariñosa.",
       "estado": "Regular",
-      "condicion": "Sin condiciones especiales",
-      "disponibilidad": "adoptado",
       "fecha_ingreso": "2023-06-15",
+      "condicion": "Sin condiciones especiales",
+      "disponibilidad": "disponible",
       "imagen": "https://www.infobae.com/resizer/v2/DDBXRQXN4JGVVIIMGCTTQ3AI5Y.jpg?auth=166324b211b263f52e49c4a93d1038e12421c510921caa900c654a2b10fab810&smart=true&width=1200&height=1200&quality=85",
       "imagen2": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjuAgyHhme66b_WC5CrMxvdrTWjHyRY6uZmuasRxSGpaOZTeXH5lMAVKdtGRlmpqSkhyM&usqp=CAU",
-      "imagen3": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzkM3jtcp06wyUtqfearhcZyKhFNRdCh3ChkGFo--iqr0tTkV1F-Oo_m60i9tX2D8axts&usqp=CAU",
-      "id": "6d26"
+      "imagen3": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzkM3jtcp06wyUtqfearhcZyKhFNRdCh3ChkGFo--iqr0tTkV1F-Oo_m60i9tX2D8axts&usqp=CAU"
     },
     {
       "id_gato": 3,
@@ -84,7 +52,7 @@
       "condicion": "Sin condiciones especiales",
       "disponibilidad": "adoptado",
       "fecha_ingreso": "2023-07-20",
-      "imagen": "https://lh3.googleusercontent.com/proxy/ztQ_uft71q98_WiYo9L0XC1sSoPlH_ciPPPADsbWbMs3QuIkvZZOgprM4jgyuOU4LmWMynmuQ0ri8raA5QHJzV1s2s4",
+      "imagen": "https://cdn.skoon.com.mx/wp-content/uploads/2021/07/13115111/Gato-persa-gris-.jpg",
       "imagen2": "https://petepua.com/wp-content/uploads/2023/02/gato-Curl-americano.-Laperm-cat.-razas-de-gatos.-razas-de-gatos-segun-FIFE.-petepua.jpg",
       "imagen3": "https://cdn.wamiz.fr/cdn-cgi/image/format=auto,quality=80,width=532,height=532,fit=cover/animal/breed/pictures/666856791352f115722211.jpg",
       "id": "bdb9"
@@ -96,7 +64,7 @@
       "descripcion": "Independiente pero leal.",
       "estado": "Critico",
       "condicion": "Heterocromía",
-      "disponibilidad": "adoptado",
+      "disponibilidad": "disponible",
       "fecha_ingreso": "2023-08-05",
       "imagen": "https://vitalcan.es/wp-content/uploads/kitty-2903812_1280.jpg",
       "imagen2": "https://images.ctfassets.net/denf86kkcx7r/6JC1x08Rgd6t5rYHs2Qyue/36717bfb27a29e772e38603f354355c1/gato_blanco_Photo_2.jpg?fit=fill&w=1024&q=80",
@@ -112,7 +80,7 @@
       "condicion": "Sin condiciones especiales",
       "disponibilidad": "disponible",
       "fecha_ingreso": "2023-09-10",
-      "imagen": "https://lh3.googleusercontent.com/proxy/9pHFDeXLYU_m9LkI0PeYPfhbOxmFuQC3u8Wl8bnOJyTfZhd1Qe7tWNB_Gr61Z98dhOgPKqRUq8VbQ16Hxy4F8BURKMVuIOMfJho8NyozwvgyuEVVDA",
+      "imagen": "https://cdn0.expertoanimal.com/es/posts/5/2/6/razas_de_gatos_grises_azulados_23625_5_600.jpg",
       "imagen2": "https://media.graphassets.com/output=format:webp/0jK9PybzS76rYc1grsVm",
       "imagen3": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1STSFAVYckTEOLW8Tch183jtJT_tGUxW45Q&s",
       "id": "a342"
@@ -124,7 +92,7 @@
       "descripcion": "Cariñoso y dormilón.",
       "estado": "Bueno",
       "condicion": "Sin condiciones especiales",
-      "disponibilidad": "adoptado",
+      "disponibilidad": "disponible",
       "fecha_ingreso": "2023-10-01",
       "imagen": "https://www.purina.es/sites/default/files/styles/ttt_image_510/public/2024-02/sitesdefaultfilesstylessquare_medium_440x440public2022-06Siamese201.jpg?itok=j9A2IvjN",
       "imagen2": "https://www.infobae.com/resizer/v2/EZSTXGDBEJGQFG3SDCFVSVY2N4.jpg?auth=1c2b2008fdd5b1b9d9dd56e34456a4a889b5841e79269b20abcb72dca1793a5f&smart=true&width=350&height=197&quality=85",
@@ -144,6 +112,33 @@
       "imagen2": "https://d2yoo3qu6vrk5d.cloudfront.net/pulzo-lite/images-resized/PP3133988A-h-o.jpg",
       "imagen3": "https://blog.felinus.cl/wp-content/uploads/2022/12/gato-persa-2.png",
       "id": "3639"
+    },
+    {
+      "id": "6ee3",
+      "nombre": "BRAYANA",
+      "edad": 4,
+      "descripcion": "MUY LINDA",
+      "estado": "Regular",
+      "fecha_ingreso": "2025-06-26",
+      "condicion": "",
+      "disponibilidad": "disponible",
+      "imagen": "https://okdiario.com/img/2023/10/10/un-estudio-revela-los-5-tipos-de-duenos-para-gatos-que-hay.jpg",
+      "imagen2": "",
+      "imagen3": ""
+    },
+    {
+      "id": "330f",
+      "nombre": "Simba",
+      "edad": "1",
+      "descripcion": "Simba es un gato curioso y juguetón, siempre explorando cada rincón de su entorno. Le encanta la compañía y es muy cariñoso con las personas. Tiene un pelaje suave y brillante, y una mirada llena de inteligencia y ternura. Es sociable con otros animales y se adapta fácilmente a nuevos ambientes. Ideal para familias que buscan un compañero activo y afectuoso.",
+      "estado": "Bueno",
+      "condicion": "",
+      "disponibilidad": "disponible",
+      "fecha_ingreso": "2025-06-12",
+      "imagen": "https://smylepets.com/wp-content/uploads/2022/03/gatos-grises-genetica-.jpg",
+      "imagen2": "https://th.bing.com/th/id/OIP.TjF9gQN9xJ0jwMypEyTBPgHaEK?r=0&rs=1&pid=ImgDetMain",
+      "imagen3": "https://www.hogarmania.com/archivos/202405/gatos-bonitos-azul-turco-XxXx80.jpg"
     }
-  ]
+  ],
+  "adoptionRequests": []
 }
