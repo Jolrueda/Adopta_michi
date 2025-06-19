@@ -36,6 +36,16 @@
       "type": "regular",
       "createdAt": "2025-06-19T00:54:31.050Z",
       "totalDonated": 0
+    },
+    {
+      "id": "6e003b93-9c4a-4ff8-9328-5c9f072c974d",
+      "fullName": "admin",
+      "email": "admin@unal.edu.co",
+      "password": "Test1234.",
+      "type": "admin",
+      "createdAt": "2025-06-19T02:53:10.251Z",
+      "adoptionsManaged": 0,
+      "totalDonated": 0
     }
   ],
   "gatos": [
@@ -156,6 +166,15 @@
       "name": "jose ",
       "phone": "3113524969",
       "email": "joruedam@unal.edu.co",
+      "message": "",
+      "status": "rechazada"
+    },
+    {
+      "id": "60a05ee0-d420-4539-ace3-c29aa7028c65",
+      "catId": "6d26",
+      "name": "Pepe",
+      "phone": "4653411",
+      "email": "jorozcova@unal.edu.co",
       "message": "",
       "status": "rechazada"
     }
