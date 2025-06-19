@@ -4,12 +4,13 @@ import { createCat } from "../../utils/db";
 
 const CrearGato = () => {
   const [formData, setFormData] = useState({
+    
     nombre: "",
     edad: 0,
     descripcion: "",
-    estado: "Bueno",
+    estado: "Bueno" as "Bueno" | "Regular" | "Critico",
     condicion: "",
-    disponibilidad: "disponible",
+    disponibilidad: "disponible" as "disponible" | "adoptado" | "en proceso",
     fecha_ingreso: "",
     imagen: "",
     imagen2: "",

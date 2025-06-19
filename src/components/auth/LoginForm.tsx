@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LoginData } from '../../types/Auth/AuthTypes';
 import { loginUser } from '../../utils/db';
+import { useAuth } from '../../contexts/AuthContext';
 import { AiTwotoneMail } from "react-icons/ai";
 import { FaLock } from "react-icons/fa6";
 
@@ -10,13 +11,20 @@ const LoginForm: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate(); // Hook para redirigir
+    const { setUser } = useAuth(); // Hook para manejar autenticación
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null); // Reiniciar error
 
         try {
+            console.log('LoginForm: Intentando hacer login con:', data.email);
             const user = await loginUser(data.email, data.password);
+            console.log('LoginForm: Usuario obtenido:', user);
+            
+            // Guardar la información del usuario en el contexto
+            setUser(user);
+            console.log('LoginForm: Usuario establecido en contexto');
 
             
             navigate("/visualizacion/MainPage"); // Redirige a MainPage

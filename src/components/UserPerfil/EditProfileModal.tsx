@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import type { UserProfile} from '../../types/Auth/AuthTypes';
+import type { User} from '../../types/Auth/AuthTypes';
 
 interface EditProfileModalProps {
-  user: UserProfile;
+  user: User;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updatedUser: Partial<UserProfile>) => void;
+  onSave: (updatedUser: Partial<User>) => void;
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import type { Cat } from "../visualizacion/types";
+import type { Cat } from "../../types/visualizacion/typesCat";
+
 
 interface EditCatModalProps {
   cat: Cat | null;
@@ -12,9 +13,15 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
     id: "",
     nombre: "",
     edad: 0,
-    estado: "",
+    estado: "Bueno" as "Bueno" | "Regular" | "Critico",
     descripcion: "",
-    imagenUrl: ""
+    imagen: "",
+    imagen2: "",
+    imagen3: "",
+    disponibilidad: "disponible" as "disponible" | "adoptado" | "en proceso",
+    condicion: "Sin condiciones especiales",
+    fecha_ingreso: new Date().toISOString(),
+    id_gato: ""
   });
 
   useEffect(() => {
@@ -103,7 +110,7 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
           <input
             type="text"
             name="imagenUrl"
-            value={formData.imagenUrl}
+            value={formData.imagen}
             onChange={handleChange}
             className="w-full border p-2 rounded mt-1"
           />

@@ -1,5 +1,6 @@
 import React from 'react';
 import type { PageHeaderProps } from '../../types/CatProfile/PageHeader';
+import BackButton from '../general/BackButton';
 
 function capitalizarPalabra(palabra: string) {
   if (!palabra) return palabra; // Manejar cadenas vacías
@@ -23,12 +24,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, clickbutton, status }) =
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="mb-6">
-        <button
-          onClick={clickbutton}
-          className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300"
-        >
-          &larr; Volver a la lista
-        </button>
+        <BackButton onClick={clickbutton} />
       </div>
       
       <div className="flex items-center justify-between">

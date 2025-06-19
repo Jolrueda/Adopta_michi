@@ -5,6 +5,7 @@ import { AiTwotoneMail } from "react-icons/ai";
 import { FaLock } from "react-icons/fa6";
 import { registerUser } from '../../utils/db';
 
+
 const RegisterForm: React.FC = () => {
   const [data, setData] = useState<RegisterData>({ fullName: '', email: '', password: '', type: 'regular' });
   const [errors, setErrors] = useState<Partial<RegisterData>>({});
@@ -41,8 +42,7 @@ const RegisterForm: React.FC = () => {
         type: isAdmin ? 'admin' : 'regular',
         createdAt: new Date(),
         profilePicture: undefined, // Por defecto, no se asigna imagen
-        phoneNumber: undefined, // Por defecto, no se asigna número telefónico
-        adoptionsManaged: isAdmin ? 0 : undefined, // Solo para admins
+        adoptionsManaged: 0, // Solo para admins
         totalDonated: 0,
       };
 

@@ -49,22 +49,32 @@ export const updateCat = async (catId: string, updatedCat: Partial<Cat>): Promis
   
     return response.json();
   };
-  
+
 
 export const loginUser = async (email: string, password: string): Promise<User> => {
-    const response = await fetch(`${BASE_URL_USERS}?email=${email}&password=${password}`);
-    if (!response.ok) {
-        throw new Error('Error al buscar usuario.');
-    }
+    console.log('loginUser: Intentando conectar a:', `${BASE_URL_USERS}?email=${email}&password=${password}`);
 
-    const users = await response.json();
-    if (users.length === 0) {
-        throw new Error('Correo o contraseña incorrectos.');
+    try {
+        const response = await fetch(`${BASE_URL_USERS}?email=${email}&password=${password}`);
+        console.log('loginUser: Respuesta del servidor:', response.status, response.statusText);
+
+        if (!response.ok) {
+            throw new Error('Error al buscar usuario.');
+        }
+
+        const users = await response.json();
+        if (users.length === 0) {
+            throw new Error('Correo o contraseña incorrectos.');
+        }
+        return users[0];
+    } catch (error) {
+        console.error('loginUser: Ocurrió un error durante el inicio de sesión:', error);
+        throw new Error('No se pudo iniciar sesión. Inténtelo nuevamente más tarde.');
     }
-    return users[0];
 };
 
-export const createCat = async (cat: Omit<Cat, 'id'>): Promise<Cat> => {
+
+export const createCat = async (cat: Omit<Cat, 'id' | 'id_gato'>): Promise<Cat> => {
     const response = await fetch(BASE_URL_CATS, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
