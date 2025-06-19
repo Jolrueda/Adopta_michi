@@ -47,7 +47,7 @@ const Banner: React.FC = () => {
             </div>
 
             {/* Botones */}
-            <div className="grid grid-cols-2 gap-2 w-full md:flex md:flex-row md:w-auto md:items-center">
+            <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 w-full md:w-auto">
                 {user?.type === "admin" && (
                     <>
                         <button
