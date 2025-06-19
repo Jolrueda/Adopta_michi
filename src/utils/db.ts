@@ -74,7 +74,7 @@ export const loginUser = async (email: string, password: string): Promise<User> 
 };
 
 
-export const createCat = async (cat: Omit<Cat, 'id'>): Promise<Cat> => {
+export const createCat = async (cat: Omit<Cat, 'id' | 'id_gato'>): Promise<Cat> => {
     const response = await fetch(BASE_URL_CATS, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
