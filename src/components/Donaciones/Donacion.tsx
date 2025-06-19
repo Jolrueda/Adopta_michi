@@ -1,4 +1,5 @@
 import React, { useState, type ChangeEvent, type FormEvent } from "react";
+import {useNavigate } from 'react-router-dom';
 
 type DatosPago = {
   nombre: string;
@@ -11,6 +12,7 @@ const Donacion: React.FC = () => {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState<string>("");
   const [errorMonto, setErrorMonto] = useState<string>("");
+  const navigate = useNavigate();
 
   const [datosPago, setDatosPago] = useState<DatosPago>({
     nombre: "",
@@ -57,6 +59,9 @@ const Donacion: React.FC = () => {
     setErrorPago("");
     setLoading(false);
     setSuccess(false);
+    navigate('/visualizacion/MainPage');
+
+
   };
 
   // Algoritmo de Luhn
@@ -266,7 +271,7 @@ const Donacion: React.FC = () => {
             type="button"
             onClick={handleCancelar}
             disabled={loading}
-            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition cursor-pointer"
+            className="bg-gray-300 text-black-700 px-4 py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
           >
             Cancelar
           </button>
