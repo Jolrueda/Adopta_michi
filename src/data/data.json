@@ -47,7 +47,7 @@
       "estado": "Regular",
       "fecha_ingreso": "2023-06-15",
       "condicion": "Sin condiciones especiales",
-      "disponibilidad": "disponible",
+      "disponibilidad": "en proceso",
       "imagen": "https://www.infobae.com/resizer/v2/DDBXRQXN4JGVVIIMGCTTQ3AI5Y.jpg?auth=166324b211b263f52e49c4a93d1038e12421c510921caa900c654a2b10fab810&smart=true&width=1200&height=1200&quality=85",
       "imagen2": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjuAgyHhme66b_WC5CrMxvdrTWjHyRY6uZmuasRxSGpaOZTeXH5lMAVKdtGRlmpqSkhyM&usqp=CAU",
       "imagen3": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzkM3jtcp06wyUtqfearhcZyKhFNRdCh3ChkGFo--iqr0tTkV1F-Oo_m60i9tX2D8axts&usqp=CAU"
@@ -158,6 +158,15 @@
       "email": "joruedam@unal.edu.co",
       "message": "",
       "status": "rechazada"
+    },
+    {
+      "id": "2633ef86-eb58-4ee6-b6b6-1e7c50c3556d",
+      "catId": "6d26",
+      "name": "jose ",
+      "phone": "3113524969",
+      "email": "joruedam@unal.edu.co",
+      "message": "",
+      "status": "pendiente"
     }
   ]
 }
