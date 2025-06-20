@@ -30,12 +30,13 @@
     },
     {
       "id": "e511585e-8839-45cb-88cc-33b8e4d10e92",
-      "fullName": "Jose Rueda ",
+      "fullName": "Jose Rueda",
       "email": "joruedam@unal.edu.co",
       "password": "joseLuis1318@",
       "type": "regular",
       "createdAt": "2025-06-19T00:54:31.050Z",
-      "totalDonated": 0
+      "totalDonated": 0,
+      "profilePicture": "https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg"
     },
     {
       "id": "6e003b93-9c4a-4ff8-9328-5c9f072c974d",
@@ -242,6 +243,15 @@
       "tarjeta": "4111111111111111",
       "fecha_tarjeta": "12/25",
       "cvv": "123"
+    },
+    {
+      "id": "24ae8538-28f2-4c7d-9f20-571b3f7d60f4",
+      "email": "joruedam@unal.edu.co",
+      "monto": 20000,
+      "nombre": "j",
+      "tarjeta": "4111111111111111",
+      "fecha_tarjeta": "03/26",
+      "cvv": "124"
     }
   ]
 }

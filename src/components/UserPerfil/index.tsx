@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import type { User} from '../../types/Auth/AuthTypes';
 import EditProfileModal from './EditProfileModal';
 import BackButton from '../general/BackButton';
+import { FaUserCircle } from 'react-icons/fa';
 
 //import UserInfo from '../UserInfo';
 
 import  { useAuth } from '../../contexts/AuthContext';
-import { fetchDonations } from '../../utils/db'; // Asegúrate de que esta función esté implementada correctamente
+import { fetchDonations, updateUser } from '../../utils/db'; // Asegúrate de que esta función esté implementada correctamente
 
 
 
@@ -21,11 +22,8 @@ const UserProfileComponent: React.FC = () => {
   const { user: authUser, setUser } = useAuth();
   // Simular datos del usuario - en producción esto vendría de un contexto de autenticación o API
   useEffect(() => {
-    if (authUser === null) {
-      navigate('/');
-      return;
-    }
-    
+
+    // Usuario autenticado cargado correctamente
     setIsLoading(false);
   }, [navigate, authUser]);
 
@@ -82,16 +80,39 @@ const UserProfileComponent: React.FC = () => {
     console.log('🔄 Guardando cambios del perfil:', updatedUser);
     
     if (authUser) {
-      // Crear el usuario actualizado
-      const updatedAuthUser = { 
-        ...authUser, 
-        ...updatedUser,
-        // Asegurar que los campos se mantengan
-        profilePicture: updatedUser.profilePicture || authUser.profilePicture
-      };
-      
-      // Actualizar el contexto de autenticación
-      setUser(updatedAuthUser);
+      try {
+        // Actualizar en la "base de datos" (json-server)
+        const apiUpdatedUser = await updateUser(authUser.id, {
+          fullName: updatedUser.fullName,
+          email: updatedUser.email,
+          profilePicture: updatedUser.profilePicture,
+        });
+
+        // Fusionar para mantener cualquier campo adicional localmente
+        const updatedAuthUser = {
+          ...authUser,
+          ...apiUpdatedUser,
+        } as User;
+
+        // Actualizar el contexto de autenticación
+        setUser(updatedAuthUser);
+      } catch (error) {
+        console.error('❌ Error al actualizar usuario en la base de datos:', error);
+        // Opcional: mostrar notificación de error
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        notification.innerHTML = '❌ Error al actualizar el perfil. Inténtalo de nuevo.';
+        document.body.appendChild(notification);
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => {
+            if (notification.parentNode) {
+              document.body.removeChild(notification);
+            }
+          }, 300);
+        }, 3000);
+        return;
+      }
       
       // Cerrar el modal
       setIsEditingProfile(false);
@@ -177,16 +198,20 @@ const UserProfileComponent: React.FC = () => {
           {/* Profile Content */}
           <div className="relative px-6 sm:px-8 pb-8">
             {/* Profile Picture */}
-            <div className="flex justify-center -mt-16 sm:-mt-20 mb-6">
+            <div className="flex justify-center -mt-12 sm:-mt-16 md:-mt-20 mb-6">
               <div 
                 className="relative group cursor-pointer"
                 onClick={handleProfilePictureClick}
               >
-                <img
-                  src={authUser.profilePicture ? `${authUser.profilePicture}?v=${forceUpdate}` : 'https://via.placeholder.com/150x150/7C3AED/FFFFFF?text=USER'}
-                  alt="Foto de perfil"
-                  className="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-white shadow-lg object-cover transition-transform group-hover:scale-105"
-                />
+                {authUser.profilePicture ? (
+                  <img
+                    src={`${authUser.profilePicture}?v=${forceUpdate}`}
+                    alt="Foto de perfil"
+                    className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full border-4 border-white bg-white shadow-lg object-cover transition-transform group-hover:scale-105"
+                  />
+                ) : (
+                  <FaUserCircle className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 text-purple-500 rounded-full border-4 border-white bg-white shadow-lg transition-transform group-hover:scale-105" />
+                )}
                 <div className="absolute inset-0 rounded-full bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
                   <span className="text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity">
                     ✏️ Cambiar
@@ -326,11 +351,11 @@ const UserProfileComponent: React.FC = () => {
                 </div>
         
 
-                  <div className="p-5 flex justify-between items-center"> 
+                  <div className="p-5 flex flex-col sm:flex-row gap-4 justify-between items-center"> 
                     <BackButton onClick={() => navigate('/visualizacion/MainPage')} />
                     <button
                       onClick={handleEditProfile}
-                      className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-6 sm:px-8 py-3 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-6 sm:px-8 py-3 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                     >
                       <span className="text-lg">✏️</span>
                       Editar Perfil

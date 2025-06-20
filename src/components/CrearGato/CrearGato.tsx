@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createCat } from "../../utils/db";
+import BackButton from "../general/BackButton";
 
 const CrearGato = () => {
   const [formData, setFormData] = useState({
@@ -41,15 +42,12 @@ const CrearGato = () => {
   };
 
   return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-purple-300 via-purple-400 to-purple-600 px-6 py-12">
+      <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-2xl mt-10">
+        <h2 className="text-center text-2xl font-bold text-purple-700 mb-6">Crear Nuevo Gato</h2>
         <form
             onSubmit={handleSubmit}
-            className="bg-white bg-opacity-90 backdrop-blur-md rounded-3xl shadow-2xl p-10 max-w-lg w-full space-y-6 border-4 border-purple-700"
+            className="flex flex-col gap-5"
         >
-          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 via-purple-900 to-purple-800 text-center mb-10">
-            Crear Nuevo Gato
-          </h2>
-
           <div>
             <label htmlFor="nombre" className="block font-bold mb-1">
               Nombre del Gato
@@ -205,10 +203,16 @@ const CrearGato = () => {
 
           <button
               type="submit"
-              className="w-full py-4 rounded-full bg-gradient-to-r from-purple-700 via-purple-900 to-purple-800 text-white font-extrabold text-lg shadow-lg hover:shadow-purple-600 transition duration-300"
+              className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition"
           >
             Crear Gato
           </button>
+
+          {/* Botón para volver a la lista de gatos */}
+          <BackButton
+            onClick={() => navigate('/visualizacion/MainPage')}
+            className="mt-4 bg-purple-600 hover:bg-purple-700  text-white font-semibold py-3 px-6 rounded-lg transition duration-300  sm:w-auto w-auto"
+          />
         </form>
       </div>
   );

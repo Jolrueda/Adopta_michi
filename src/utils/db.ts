@@ -338,3 +338,25 @@ export const fetchDonations = async (): Promise<Donation[]> => {
     }
     return response.json();
 };
+
+// Función para actualizar datos de un usuario (nombre, email, foto de perfil, etc.)
+export const updateUser = async (userId: string, updatedFields: Partial<User>): Promise<User> => {
+    try {
+        const response = await fetch(`${BASE_URL_USERS}/${userId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedFields),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al actualizar los datos del usuario.');
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error('updateUser: Error al actualizar usuario:', error);
+        throw error;
+    }
+};
