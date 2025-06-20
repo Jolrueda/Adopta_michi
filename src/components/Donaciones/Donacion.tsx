@@ -24,7 +24,6 @@ const Donacion: React.FC = () => {
   const [errorMonto, setErrorMonto] = useState<string>("");
   const [errorPago, setErrorPago] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -62,7 +61,6 @@ const Donacion: React.FC = () => {
     setDatosPago({ nombre: "", numeroTarjeta: "", fechaExpiracion: "", cvv: "" });
     setErrorPago("");
     setLoading(false);
-    setSuccess(false);
     navigate("/visualizacion/MainPage");
   };
 
@@ -159,7 +157,13 @@ const Donacion: React.FC = () => {
         cvv: datosPago.cvv,
       });
 
-      setSuccess(true);
+      navigate("/gracias",{
+        state: {
+          selectedAmount,
+          customAmount
+        }
+      });
+
     } catch (error) {
       console.error("Error al guardar la donación:", error);
       setErrorPago("Hubo un error al registrar la donación. Intenta nuevamente.");
@@ -168,30 +172,6 @@ const Donacion: React.FC = () => {
     }
   };
 
-  if (success) {
-    return (
-        <div className="max-w-md mx-auto p-8 mt-10 bg-white rounded-lg shadow-md text-center">
-          <h2 className="text-2xl font-bold text-purple-700 mb-4">¡Gracias por tu donación!</h2>
-          <p className="text-lg mb-2">
-            Hemos recibido tu donación de{" "}
-            <span className="font-semibold text-purple-800">
-            ${selectedAmount ?? Number(customAmount).toLocaleString()}
-          </span>
-            .
-          </p>
-          <p className="mb-6">Se ha enviado un recibo a tu correo electrónico.</p>
-          <button
-              onClick={() => {
-                setSuccess(false);
-                handleCancelar();
-              }}
-              className="bg-purple-700 text-white px-6 py-2 rounded-lg hover:bg-purple-800 transition"
-          >
-            Realizar otra donación
-          </button>
-        </div>
-    );
-  }
 
   return (
       <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
@@ -200,8 +180,6 @@ const Donacion: React.FC = () => {
         <form
             onSubmit={handleSubmit}
             className="flex flex-col gap-5"
-            action="#"
-            method="post" // Aunque no afecta React, refuerza el control del navegador
         >
           <div className="flex justify-between">
             {amounts.map((amt) => (

@@ -8,6 +8,7 @@ import UserProfile from './components/UserPerfil';
 import AdoptionRequestsPage from "./components/AdoptionRequests/AdoptionRequestsPage.tsx";
 import Donacion from './components/Donaciones/Donacion';
 import CrearGato from './components/CrearGato/CrearGato.tsx';
+import GraciasPorTuDonacion from './components/Donaciones/GraciasDonacion.tsx';
 
 function App() {
     return (
@@ -20,6 +21,9 @@ function App() {
                 <Route path="/solicitudes" element={<AdoptionRequestsPage />} />
                 <Route path="/donacion" element={<Donacion />} />
                 <Route path="/crear-gato" element={<CrearGato/>} />
+                <Route path="/gracias" element={<GraciasPorTuDonacion selectedAmount={null} customAmount={''} onAnotherDonation={function(): void {
+                    throw new Error('Function not implemented.');
+                } } />} />
             </Routes>
         </AuthProvider>
     );
