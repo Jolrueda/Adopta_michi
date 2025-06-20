@@ -7,6 +7,8 @@ import BackButton from '../general/BackButton';
 //import UserInfo from '../UserInfo';
 
 import  { useAuth } from '../../contexts/AuthContext';
+import { fetchDonations } from '../../utils/db'; // Asegúrate de que esta función esté implementada correctamente
+
 
 
 const UserProfileComponent: React.FC = () => {
@@ -14,6 +16,8 @@ const UserProfileComponent: React.FC = () => {
   const [user, setUser] = useState<User| null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [totalDonations, setTotalDonations] = useState<number>(0);
+
   const { user: authUser } = useAuth();
   // Simular datos del usuario - en producción esto vendría de un contexto de autenticación o API
   useEffect(() => {
@@ -46,6 +50,38 @@ const UserProfileComponent: React.FC = () => {
     
     
   }, [navigate, authUser]);
+
+  useEffect(() => {
+    const fetchTotalDonations = async () => {
+      if (user?.type === 'admin') {
+        try {
+          const donations = await fetchDonations();
+          const total = donations.reduce((sum, donation) => sum + donation.monto, 0);
+          setTotalDonations(total);
+        } catch (error) {
+          console.error('Error al obtener las donaciones:', error);
+          setTotalDonations(0);
+        }
+      }
+    };
+
+    fetchTotalDonations();
+  }, [user]);
+
+  useEffect(() => {
+    if (user?.type === "regular") {
+      fetchDonations()
+          .then((donations) => {
+            const userDonations = donations.filter((donation) => donation.email === user.email);
+            const total = userDonations.reduce((sum, donation) => sum + donation.monto, 0);
+            setTotalDonations(total);
+          })
+          .catch((error) => {
+            console.error("Error al cargar las donaciones del usuario:", error);
+          });
+    }
+  }, [user]);
+
 
   const handleEditProfile = () => {
     setIsEditingProfile(true);
@@ -238,12 +274,23 @@ const UserProfileComponent: React.FC = () => {
                   <div className="flex justify-center">
                     <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
                       <span className="text-2xl">💰</span>
+                      {user?.type === "admin" && (
                       <div>
-                        <p className="text-sm text-gray-500">Total Donado</p>
+                        <p className="text-sm text-gray-500">Total Donado a Adopta un Michi</p>
                         <p className="font-medium text-gray-900">
-                          {user.totalDonated !== undefined ? `$${user.totalDonated.toLocaleString()}` : 'No disponible'}
+                          {user.type === 'admin' ? `$${totalDonations.toLocaleString()}` : '$0'}
                         </p>
                       </div>
+                      )}
+                      {user?.type === "regular" && (
+                          <div>
+                            <p className="text-sm text-gray-500">Total Donado por ti</p>
+                            <p className="font-medium text-gray-900">
+                              {`$${totalDonations.toLocaleString()}`}
+                            </p>
+                          </div>
+                      )}
+
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,7 @@
-import React, { useState, type ChangeEvent, type FormEvent } from "react";
-import {useNavigate } from 'react-router-dom';
+import React, { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { createDonation } from "../../utils/db.ts";
+import { useAuth } from "../../contexts/AuthContext";
 
 type DatosPago = {
   nombre: string;
@@ -11,8 +13,6 @@ type DatosPago = {
 const Donacion: React.FC = () => {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState<string>("");
-  const [errorMonto, setErrorMonto] = useState<string>("");
-  const navigate = useNavigate();
 
   const [datosPago, setDatosPago] = useState<DatosPago>({
     nombre: "",
@@ -20,10 +20,14 @@ const Donacion: React.FC = () => {
     fechaExpiracion: "",
     cvv: "",
   });
-  const [errorPago, setErrorPago] = useState<string>("");
 
+  const [errorMonto, setErrorMonto] = useState<string>("");
+  const [errorPago, setErrorPago] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   const amounts: number[] = [10000, 20000, 50000];
 
@@ -59,9 +63,7 @@ const Donacion: React.FC = () => {
     setErrorPago("");
     setLoading(false);
     setSuccess(false);
-    navigate('/visualizacion/MainPage');
-
-
+    navigate("/visualizacion/MainPage");
   };
 
   // Algoritmo de Luhn
@@ -121,7 +123,7 @@ const Donacion: React.FC = () => {
     return true;
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (loading) return;
@@ -138,158 +140,183 @@ const Donacion: React.FC = () => {
     }
 
     setLoading(true);
-    setErrorPago("");
     setErrorMonto("");
+    setErrorPago("");
 
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const email = user?.email;
+      if (!email) {
+        setErrorPago("No se encontró un correo válido. Inicia sesión.");
+        return;
+      }
+
+      await createDonation({
+        email,
+        monto: amountToDonate,
+        nombre: datosPago.nombre,
+        tarjeta: datosPago.numeroTarjeta,
+        fecha_tarjeta: datosPago.fechaExpiracion,
+        cvv: datosPago.cvv,
+      });
+
       setSuccess(true);
-    }, 2000);
+    } catch (error) {
+      console.error("Error al guardar la donación:", error);
+      setErrorPago("Hubo un error al registrar la donación. Intenta nuevamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto p-8 mt-10 bg-white rounded-lg shadow-md text-center">
-        <h2 className="text-2xl font-bold text-purple-700 mb-4">¡Gracias por tu donación!</h2>
-        <p className="text-lg mb-2">
-          Hemos recibido tu donación de{" "}
-          <span className="font-semibold text-purple-800">
-            ${ (selectedAmount ?? Number(customAmount)).toLocaleString() }
-          </span>.
-        </p>
-        <p className="mb-6">Se ha enviado un recibo a tu correo electrónico.</p>
-        <button
-          onClick={handleCancelar}
-          className="bg-purple-700 text-white px-6 py-2 rounded-lg hover:bg-purple-800 transition"
-        >
-          Realizar otra donación
-        </button>
-      </div>
+        <div className="max-w-md mx-auto p-8 mt-10 bg-white rounded-lg shadow-md text-center">
+          <h2 className="text-2xl font-bold text-purple-700 mb-4">¡Gracias por tu donación!</h2>
+          <p className="text-lg mb-2">
+            Hemos recibido tu donación de{" "}
+            <span className="font-semibold text-purple-800">
+            ${selectedAmount ?? Number(customAmount).toLocaleString()}
+          </span>
+            .
+          </p>
+          <p className="mb-6">Se ha enviado un recibo a tu correo electrónico.</p>
+          <button
+              onClick={() => {
+                setSuccess(false);
+                handleCancelar();
+              }}
+              className="bg-purple-700 text-white px-6 py-2 rounded-lg hover:bg-purple-800 transition"
+          >
+            Realizar otra donación
+          </button>
+        </div>
     );
   }
 
   return (
-    <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
-      <h2 className="text-center text-2xl font-bold text-purple-700 mb-6">
-        Realiza tu donación
-      </h2>
+      <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
+        <h2 className="text-center text-2xl font-bold text-purple-700 mb-6">Realiza tu donación</h2>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <div className="flex justify-between">
-          {amounts.map((amt) => (
-            <button
-              key={amt}
-              type="button"
-              disabled={loading}
-              className={`flex-1 mx-1 py-2 rounded-lg font-semibold transition-colors cursor-pointer ${
-                selectedAmount === amt
-                  ? "bg-purple-700 text-white"
-                  : "bg-purple-200 text-purple-700 hover:bg-purple-400"
-              }`}
-              onClick={() => handleAmountClick(amt)}
-            >
-              ${amt.toLocaleString()}
-            </button>
-          ))}
-        </div>
+        <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-5"
+            action="#"
+            method="post" // Aunque no afecta React, refuerza el control del navegador
+        >
+          <div className="flex justify-between">
+            {amounts.map((amt) => (
+                <button
+                    key={amt}
+                    type="button"
+                    disabled={loading}
+                    className={`flex-1 mx-1 py-2 rounded-lg font-semibold transition-colors cursor-pointer ${
+                        selectedAmount === amt
+                            ? "bg-purple-700 text-white"
+                            : "bg-purple-200 text-purple-700 hover:bg-purple-400"
+                    }`}
+                    onClick={() => handleAmountClick(amt)}
+                >
+                  ${amt.toLocaleString()}
+                </button>
+            ))}
+          </div>
 
-        <input
-          type="number"
-          min={0}
-          placeholder="Monto libre"
-          value={customAmount}
-          disabled={loading}
-          onChange={handleCustomChange}
-          className="border border-gray-300 rounded-lg p-2 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-        />
-
-        {errorMonto && <p className="text-red-600 text-sm">{errorMonto}</p>}
-
-        <hr className="my-4 border-gray-300" />
-
-        <div className="flex flex-col gap-3">
           <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre del titular"
-            value={datosPago.nombre}
-            onChange={handlePagoChange}
-            disabled={loading}
-            className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            required
+              type="number"
+              min={0}
+              placeholder="Monto libre"
+              value={customAmount}
+              disabled={loading}
+              onChange={handleCustomChange}
+              className="border border-gray-300 rounded-lg p-2 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
 
-          <div className="relative">
+          {errorMonto && <p className="text-red-600 text-sm">{errorMonto}</p>}
+
+          <hr className="my-4 border-gray-300" />
+
+          <div className="flex flex-col gap-3">
             <input
-              type="text"
-              name="numeroTarjeta"
-              placeholder="Número de tarjeta"
-              value={datosPago.numeroTarjeta}
-              onChange={handlePagoChange}
-              disabled={loading}
-              maxLength={16}
-              className="border border-gray-300 rounded-lg p-2 w-full pr-10 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
+                type="text"
+                name="nombre"
+                placeholder="Nombre del titular"
+                value={datosPago.nombre}
+                onChange={handlePagoChange}
+                disabled={loading}
+                className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                required
             />
-            {datosPago.numeroTarjeta.length === 16 && (
-              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xl">
+
+            <div className="relative">
+              <input
+                  type="text"
+                  name="numeroTarjeta"
+                  placeholder="Número de tarjeta"
+                  value={datosPago.numeroTarjeta}
+                  onChange={handlePagoChange}
+                  disabled={loading}
+                  maxLength={16}
+                  className="border border-gray-300 rounded-lg p-2 w-full pr-10 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  required
+              />
+              {datosPago.numeroTarjeta.length === 16 && (
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xl">
                 {validarTarjetaLuhn(datosPago.numeroTarjeta) ? "✅" : "❌"}
               </span>
-            )}
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <input
+                  type="text"
+                  name="fechaExpiracion"
+                  placeholder="MM/AA"
+                  value={datosPago.fechaExpiracion}
+                  onChange={handlePagoChange}
+                  disabled={loading}
+                  maxLength={5}
+                  className="border border-gray-300 rounded-lg p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  required
+              />
+              <input
+                  type="text"
+                  name="cvv"
+                  placeholder="CVV"
+                  value={datosPago.cvv}
+                  onChange={handlePagoChange}
+                  disabled={loading}
+                  maxLength={3}
+                  className="border border-gray-300 rounded-lg p-2 w-20 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  required
+              />
+            </div>
+
+            {errorPago && <p className="text-red-600 text-sm">{errorPago}</p>}
           </div>
 
-          <div className="flex gap-3">
-            <input
-              type="text"
-              name="fechaExpiracion"
-              placeholder="MM/AA"
-              value={datosPago.fechaExpiracion}
-              onChange={handlePagoChange}
-              disabled={loading}
-              maxLength={5}
-              className="border border-gray-300 rounded-lg p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
-            <input
-              type="text"
-              name="cvv"
-              placeholder="CVV"
-              value={datosPago.cvv}
-              onChange={handlePagoChange}
-              disabled={loading}
-              maxLength={3}
-              className="border border-gray-300 rounded-lg p-2 w-20 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
+          <div className="flex justify-between items-center mt-6">
+            <button
+                type="button"
+                onClick={handleCancelar}
+                disabled={loading}
+                className="bg-gray-300 text-black-700 px-4 py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
+            >
+              Cancelar
+            </button>
+
+            <button
+                type="submit"
+                disabled={loading}
+                className={`bg-purple-700 text-white font-bold px-6 py-2 rounded-lg hover:bg-purple-800 transition cursor-pointer ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+            >
+              {loading ? "Procesando..." : "Donar"}
+            </button>
           </div>
-
-          {errorPago && <p className="text-red-600 text-sm">{errorPago}</p>}
-        </div>
-
-        <div className="flex justify-between items-center mt-6">
-          <button
-            type="button"
-            onClick={handleCancelar}
-            disabled={loading}
-            className="bg-gray-300 text-black-700 px-4 py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
-          >
-            Cancelar
-          </button>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`bg-purple-700 text-white font-bold px-6 py-2 rounded-lg hover:bg-purple-800 transition cursor-pointer ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            {loading ? "Procesando..." : "Donar"}
-          </button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
   );
 };
 
 export default Donacion;
-

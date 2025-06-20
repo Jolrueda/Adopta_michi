@@ -1,9 +1,12 @@
 import type { User } from '../types/Auth/AuthTypes';
 import type {Cat} from "../types/visualizacion/typesCat.ts";
+import type { Donation } from '../types/Donaciones/Donation.ts';
+import { v4 as uuidv4 } from "uuid";
 
 const BASE_URL_USERS = 'http://localhost:3001/users';
 const BASE_URL_CATS = 'http://localhost:3001/gatos';
 const BASE_URL_ADOPTION_REQUESTS = 'http://localhost:3001/adoptionRequests';
+const BASE_URL_DONACIONES = "http://localhost:3001/donaciones";
 
 export const getUsers = async (): Promise<User[]> => {
     const response = await fetch(BASE_URL_USERS);
@@ -230,3 +233,26 @@ export const rejectAdoptionRequest = async (requestId: string, catId: string): P
     }
 };
 
+// Crear una donación
+export const createDonation = async (donation: Omit<Donation, "id">): Promise<Donation> => {
+    const response = await fetch(BASE_URL_DONACIONES, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: uuidv4(), ...donation }),
+    });
+
+    if (!response.ok) {
+        throw new Error("Error al registrar la donación.");
+    }
+
+    return response.json();
+};
+
+// Obtener todas las donaciones
+export const fetchDonations = async (): Promise<Donation[]> => {
+    const response = await fetch(BASE_URL_DONACIONES);
+    if (!response.ok) {
+        throw new Error("Error al obtener las donaciones.");
+    }
+    return response.json();
+};
