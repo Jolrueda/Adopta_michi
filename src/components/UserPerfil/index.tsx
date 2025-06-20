@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { User} from '../../types/Auth/AuthTypes';
-//import EditProfileModal from './EditProfileModal';
+import EditProfileModal from './EditProfileModal';
 import BackButton from '../general/BackButton';
 
 //import UserInfo from '../UserInfo';
@@ -11,52 +11,87 @@ import  { useAuth } from '../../contexts/AuthContext';
 
 const UserProfileComponent: React.FC = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<User| null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const { user: authUser } = useAuth();
-  // Simular datos del usuario - en producción esto vendría de un contexto de autenticación o API
+  const [forceUpdate, setForceUpdate] = useState(0); // Para forzar re-renders
+  const { user: authUser, setUser: setAuthUser } = useAuth();
+  
+  // Cargar datos del usuario solo una vez al montar el componente
   useEffect(() => {
-    // Verificar si el usuario está autenticado
-   
-      if (authUser === null) {
-        console.log('UserProfile: No hay usuario autenticado, redirigiendo al login');
-        navigate('/');
-        return;
-      } 
-      console.log('UserProfile: authUser value:', authUser);
-      
-      // Convertir User a UserProfile y agregar campos adicionales
-      const userProfile: User = {
-        id: authUser.id,
-        fullName: authUser.fullName,
-        email: authUser.email,
-        type: authUser.type,
-        createdAt: authUser.createdAt,
-        password: authUser.password,
-        profilePicture: undefined, // Por defecto sin foto de perfil (se puede agregar después)
-        // Para administradores, agregar estadísticas (en producción vendrían de la API)
-        adoptionsManaged: authUser.type === 'admin' ? 0: 0,
+    if (authUser === null) {
+      navigate('/');
+      return;
+    }
+    
+    setIsLoading(false);
+  }, [navigate, authUser]);
+
+  // Agregar campos adicionales solo una vez
+  useEffect(() => {
+    if (authUser && !authUser.hasOwnProperty('adoptionsManaged')) {
+      const enhancedUser: User = {
+        ...authUser,
+        adoptionsManaged: authUser.type === 'admin' ? 0 : 0,
         totalDonated: authUser.type === 'admin' ? 0 : 0,
       };
-      
-      setUser(userProfile);
-      setIsLoading(false);
-      console.log('Usuario cargado:', userProfile);
-    
-    
-  }, [navigate, authUser]);
+      setAuthUser(enhancedUser);
+    }
+  }, [authUser?.id, setAuthUser]); // Solo se ejecuta cuando cambia el ID del usuario
+
+  // Detectar cambios en authUser para depuración
+  useEffect(() => {
+    if (authUser) {
+      console.log('🔄 authUser actualizado:', {
+        fullName: authUser.fullName,
+        email: authUser.email,
+        profilePicture: authUser.profilePicture
+      });
+    }
+  }, [authUser?.fullName, authUser?.email, authUser?.profilePicture]);
 
   const handleEditProfile = () => {
     setIsEditingProfile(true);
   };
 
-    const handleSaveProfile = (updatedUser: Partial<User>) => {
-    if (user) {
-      setUser({ ...user, ...updatedUser });
+    const handleSaveProfile = async (updatedUser: Partial<User>) => {
+    console.log('🔄 Guardando cambios del perfil:', updatedUser);
+    
+    if (authUser) {
+      // Crear el usuario actualizado
+      const updatedAuthUser = { 
+        ...authUser, 
+        ...updatedUser,
+        // Asegurar que los campos se mantengan
+        profilePicture: updatedUser.profilePicture || authUser.profilePicture
+      };
+      
+      // Actualizar el contexto de autenticación
+      setAuthUser(updatedAuthUser);
+      
+      // Cerrar el modal
       setIsEditingProfile(false);
-      // Aquí iría la lógica para guardar en la API
-      console.log('Perfil actualizado:', updatedUser);
+      
+      // Forzar re-renderizado para asegurar que los cambios se reflejen
+      setForceUpdate(prev => prev + 1);
+      
+      // Mostrar confirmación visual
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      notification.innerHTML = '✅ Perfil actualizado exitosamente';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            document.body.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+      
+      console.log('🎉 Perfil guardado exitosamente');
+    } else {
+      console.error('❌ No se pudo actualizar: authUser es null');
     }
   };
 
@@ -65,32 +100,42 @@ const UserProfileComponent: React.FC = () => {
   };
 
   const handleProfilePictureClick = () => {
-    // Aquí iría la lógica para cambiar la foto de perfil
-    console.log('Cambiar foto de perfil');
+    // Abre el modal de edición de perfil
+    setIsEditingProfile(true);
   };
 
-  // const formatDate = (date: Date) => {
-  //   return date.toLocaleDateString('es-ES', {
-  //     day: '2-digit',
-  //     month: '2-digit',
-  //     year: 'numeric'
-  //   });
-  // };
+  const formatDate = (date: Date | string) => {
+    try {
+      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      if (isNaN(dateObj.getTime())) {
+        console.error('Fecha inválida:', date);
+        return 'Fecha no disponible';
+      }
+      return dateObj.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch (error) {
+      console.error('Error al formatear fecha:', error);
+      return 'Fecha no disponible';
+    }
+  };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-500"></div>
       </div>
     );
   }
 
-  if (!user) {
+  if (!authUser) {
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white py-8 px-4 sm:px-6 lg:px-8">
 
       <div className="max-w-4xl mx-auto">
         {/* Header */}
@@ -113,11 +158,11 @@ const UserProfileComponent: React.FC = () => {
                 onClick={handleProfilePictureClick}
               >
                 <img
-                  src={user.profilePicture || 'https://via.placeholder.com/150x150/7C3AED/FFFFFF?text=USER'}
+                  src={authUser.profilePicture ? `${authUser.profilePicture}?v=${forceUpdate}` : 'https://via.placeholder.com/150x150/7C3AED/FFFFFF?text=USER'}
                   alt="Foto de perfil"
                   className="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-white shadow-lg object-cover transition-transform group-hover:scale-105"
                 />
-                <div className="absolute inset-0 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
                   <span className="text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity">
                     ✏️ Cambiar
                   </span>
@@ -128,20 +173,20 @@ const UserProfileComponent: React.FC = () => {
             {/* User Info */}
             <div className="text-center mb-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                {user.fullName}
+                {authUser.fullName}
               </h2>
-              <p className="text-gray-600 text-lg mb-4">{user.email}</p>
+              <p className="text-gray-600 text-lg mb-4">{authUser.email}</p>
               
               {/* User ID */}
               <div className="mb-4">
                 <span className="inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
                   <span className="text-xs">🆔</span>
-                  ID: {user.id}
+                  ID: {authUser.id}
                 </span>
               </div>
               
               {/* Admin Badge */}
-              {user.type === 'admin' && (
+              {authUser.type === 'admin' && (
                 <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-800 px-4 py-2 rounded-full mb-4">
                   <span className="text-xl">👑</span>
                   <span className="font-semibold">Administrador</span>
@@ -152,16 +197,12 @@ const UserProfileComponent: React.FC = () => {
               )}
 
               {/* Regular User Badge */}
-              {user.type === 'regular' && (
+              {authUser.type === 'regular' && (
                 <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full mb-4">
                   <span className="text-xl">👤</span>
                   <span className="font-semibold">Usuario Regular</span>
                 </div>
               )}
-              
-              {/* <p className="text-gray-500">
-                Miembro desde: {formatDate(user.createdAt)}
-              </p> */}
             </div>
 
             {/* Complete User Information Card */}
@@ -177,7 +218,7 @@ const UserProfileComponent: React.FC = () => {
                     <span className="text-2xl">🆔</span>
                     <div>
                       <p className="text-sm text-gray-500">ID de Usuario</p>
-                      <p className="font-medium text-gray-900">{user.id}</p>
+                      <p className="font-medium text-gray-900">{authUser.id}</p>
                     </div>
                   </div>
                   
@@ -185,7 +226,7 @@ const UserProfileComponent: React.FC = () => {
                     <span className="text-2xl">👤</span>
                     <div>
                       <p className="text-sm text-gray-500">Nombre Completo</p>
-                      <p className="font-medium text-gray-900">{user.fullName}</p>
+                      <p className="font-medium text-gray-900">{authUser.fullName}</p>
                     </div>
                   </div>
                   
@@ -193,7 +234,7 @@ const UserProfileComponent: React.FC = () => {
                     <span className="text-2xl">📧</span>
                     <div>
                       <p className="text-sm text-gray-500">Email</p>
-                      <p className="font-medium text-gray-900">{user.email}</p>
+                      <p className="font-medium text-gray-900">{authUser.email}</p>
                     </div>
                   </div>
                 </div>
@@ -205,7 +246,7 @@ const UserProfileComponent: React.FC = () => {
                     <div>
                       <p className="text-sm text-gray-500">Tipo de Usuario</p>
                       <p className="font-medium text-gray-900 capitalize">
-                        {user.type === 'admin' ? 'Administrador' : 'Usuario Regular'}
+                        {authUser.type === 'admin' ? 'Administrador' : 'Usuario Regular'}
                       </p>
                     </div>
                   </div>
@@ -214,7 +255,7 @@ const UserProfileComponent: React.FC = () => {
                     <span className="text-2xl">📅</span>
                     <div>
                       <p className="text-sm text-gray-500">Fecha de Registro</p>
-                      {/* <p className="font-medium text-gray-900">{formatDate(user.createdAt)}</p> */}
+                      <p className="font-medium text-gray-900">{formatDate(authUser.createdAt)}</p>
                     </div>
                   </div>
                   
@@ -223,7 +264,7 @@ const UserProfileComponent: React.FC = () => {
                     <div>
                       <p className="text-sm text-gray-500">Foto de Perfil</p>
                       <p className="font-medium text-gray-900">
-                        {user.profilePicture ? 'Configurada' : 'No configurada'}
+                        {authUser.profilePicture ? 'Configurada' : 'No configurada'}
                       </p>
                     </div>
                   </div>
@@ -241,7 +282,7 @@ const UserProfileComponent: React.FC = () => {
                       <div>
                         <p className="text-sm text-gray-500">Total Donado</p>
                         <p className="font-medium text-gray-900">
-                          {user.totalDonated !== undefined ? `$${user.totalDonated.toLocaleString()}` : 'No disponible'}
+                          {authUser.totalDonated !== undefined ? `$${authUser.totalDonated.toLocaleString()}` : 'No disponible'}
                         </p>
                       </div>
                     </div>
@@ -249,27 +290,32 @@ const UserProfileComponent: React.FC = () => {
                 </div>
         
 
-                  <div className=" p-5 flex justify-center"> 
+                  <div className="p-5 flex justify-between items-center"> 
                     <BackButton onClick={() => navigate('/visualizacion/MainPage')} />
+                    <button
+                      onClick={handleEditProfile}
+                      className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-6 sm:px-8 py-3 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                    >
+                      <span className="text-lg">✏️</span>
+                      Editar Perfil
+                    </button>
                   </div>
             </div>
-
-            {/* Edit Profile Button */}
-            {/* <div className="text-center">
-              <button
-                onClick={handleEditProfile}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-              >
-                <span className="text-lg">✏️</span>
-                Editar Perfil
-              </button>
-            </div> */}
           </div>
         </div>
        
       </div>
 
-      
+      {/* Edit Profile Modal */}
+      {authUser && (
+        <EditProfileModal
+          key={`${authUser.id}-${authUser.fullName}-${authUser.email}-${authUser.profilePicture || 'no-pic'}-${forceUpdate}`}
+          user={authUser}
+          isOpen={isEditingProfile}
+          onClose={handleCloseModal}
+          onSave={handleSaveProfile}
+        />
+      )}
     </div>
   );
 };

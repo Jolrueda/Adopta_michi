@@ -32,7 +32,7 @@
       "id": "e511585e-8839-45cb-88cc-33b8e4d10e92",
       "fullName": "Jose Rueda ",
       "email": "joruedam@unal.edu.co",
-      "password": "JOSEluis13181@",
+      "password": "joseLuis1318@",
       "type": "regular",
       "createdAt": "2025-06-19T00:54:31.050Z",
       "totalDonated": 0
@@ -69,7 +69,7 @@
       "descripcion": "Curioso y explorador.",
       "estado": "Regular",
       "condicion": "Sin condiciones especiales",
-      "disponibilidad": "disponible",
+      "disponibilidad": "en proceso",
       "fecha_ingreso": "2023-07-20",
       "imagen": "https://cdn.skoon.com.mx/wp-content/uploads/2021/07/13115111/Gato-persa-gris-.jpg",
       "imagen2": "https://petepua.com/wp-content/uploads/2023/02/gato-Curl-americano.-Laperm-cat.-razas-de-gatos.-razas-de-gatos-segun-FIFE.-petepua.jpg",
@@ -177,6 +177,15 @@
       "email": "jorozcova@unal.edu.co",
       "message": "",
       "status": "rechazada"
+    },
+    {
+      "id": "58b036fa-2187-4b33-8237-95c14e438798",
+      "catId": "bdb9",
+      "name": "jose ",
+      "phone": "3113524969",
+      "email": "joruedam@unal.edu.co",
+      "message": "",
+      "status": "pendiente"
     }
   ]
 }

@@ -230,3 +230,85 @@ export const rejectAdoptionRequest = async (requestId: string, catId: string): P
     }
 };
 
+// Función para verificar si existe un usuario con el email dado
+export const findUserByEmail = async (email: string): Promise<User | null> => {
+    try {
+        const response = await fetch(`${BASE_URL_USERS}?email=${email}`);
+        if (!response.ok) {
+            throw new Error('Error al buscar usuario.');
+        }
+        
+        const users = await response.json();
+        return users.length > 0 ? users[0] : null;
+    } catch (error) {
+        console.error('findUserByEmail: Error al buscar usuario:', error);
+        throw new Error('No se pudo buscar el usuario.');
+    }
+};
+
+// Función para actualizar la contraseña de un usuario
+export const updateUserPassword = async (userId: string, newPassword: string): Promise<void> => {
+    try {
+        const response = await fetch(`${BASE_URL_USERS}/${userId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ password: newPassword }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al actualizar la contraseña.');
+        }
+    } catch (error) {
+        console.error('updateUserPassword: Error al actualizar contraseña:', error);
+        throw new Error('No se pudo actualizar la contraseña.');
+    }
+};
+
+// Función para generar un código de verificación (simulado)
+export const generateVerificationCode = (): string => {
+    return Math.floor(100000 + Math.random() * 900000).toString(); // Código de 6 dígitos
+};
+
+// Función para simular el envío de email (en producción sería un servicio real)
+export const sendPasswordResetEmail = async (email: string, verificationCode: string): Promise<void> => {
+    // Simulamos el envío de email
+    console.log(`Enviando código de verificación ${verificationCode} a ${email}`);
+    
+    // En una aplicación real, aquí enviarías un email real
+    // Por ahora solo simulamos el delay del envío
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Guardamos el código temporalmente en localStorage para simulación
+    localStorage.setItem(`reset_code_${email}`, verificationCode);
+    localStorage.setItem(`reset_code_time_${email}`, Date.now().toString());
+};
+
+// Función para verificar el código de verificación
+export const verifyResetCode = (email: string, code: string): boolean => {
+    const storedCode = localStorage.getItem(`reset_code_${email}`);
+    const codeTime = localStorage.getItem(`reset_code_time_${email}`);
+    
+    if (!storedCode || !codeTime) {
+        return false;
+    }
+    
+    // El código expira en 10 minutos (600000 ms)
+    const isExpired = (Date.now() - parseInt(codeTime)) > 600000;
+    
+    if (isExpired) {
+        localStorage.removeItem(`reset_code_${email}`);
+        localStorage.removeItem(`reset_code_time_${email}`);
+        return false;
+    }
+    
+    return storedCode === code;
+};
+
+// Función para limpiar el código de verificación después de usar
+export const clearResetCode = (email: string): void => {
+    localStorage.removeItem(`reset_code_${email}`);
+    localStorage.removeItem(`reset_code_time_${email}`);
+};
+
