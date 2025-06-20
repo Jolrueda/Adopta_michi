@@ -16,8 +16,9 @@ const UserProfileComponent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [totalDonations, setTotalDonations] = useState<number>(0);
+  const [forceUpdate, setForceUpdate] = useState(0);
 
-  const { user: authUser } = useAuth();
+  const { user: authUser, setUser } = useAuth();
   // Simular datos del usuario - en producción esto vendría de un contexto de autenticación o API
   useEffect(() => {
     if (authUser === null) {
@@ -30,23 +31,20 @@ const UserProfileComponent: React.FC = () => {
 
   // Agregar campos adicionales solo una vez
   useEffect(() => {
-    if (authUser && !authUser.hasOwnProperty('adoptionsManaged')) {
+    if (authUser && !("adoptionsManaged" in authUser)) {
       const enhancedUser: User = {
         ...authUser,
-        adoptionsManaged: authUser.type === 'admin' ? 0 : 0,
-        totalDonated: authUser.type === 'admin' ? 0 : 0,
+        adoptionsManaged: 0,
+        totalDonated: 0,
       };
-      
-      setUser(userProfile);
-      setIsLoading(false);
-      console.log('Usuario cargado:', userProfile);
-    
-    
-  }, [navigate, authUser]);
+
+      setUser(enhancedUser);
+    }
+  }, [authUser, setUser]);
 
   useEffect(() => {
     const fetchTotalDonations = async () => {
-      if (user?.type === 'admin') {
+      if (authUser?.type === 'admin') {
         try {
           const donations = await fetchDonations();
           const total = donations.reduce((sum, donation) => sum + donation.monto, 0);
@@ -59,13 +57,13 @@ const UserProfileComponent: React.FC = () => {
     };
 
     fetchTotalDonations();
-  }, [user]);
+  }, [authUser]);
 
   useEffect(() => {
-    if (user?.type === "regular") {
+    if (authUser?.type === "regular") {
       fetchDonations()
           .then((donations) => {
-            const userDonations = donations.filter((donation) => donation.email === user.email);
+            const userDonations = donations.filter((donation) => donation.email === authUser.email);
             const total = userDonations.reduce((sum, donation) => sum + donation.monto, 0);
             setTotalDonations(total);
           })
@@ -73,7 +71,7 @@ const UserProfileComponent: React.FC = () => {
             console.error("Error al cargar las donaciones del usuario:", error);
           });
     }
-  }, [user]);
+  }, [authUser]);
 
 
   const handleEditProfile = () => {
@@ -93,7 +91,7 @@ const UserProfileComponent: React.FC = () => {
       };
       
       // Actualizar el contexto de autenticación
-      setAuthUser(updatedAuthUser);
+      setUser(updatedAuthUser);
       
       // Cerrar el modal
       setIsEditingProfile(false);
@@ -306,15 +304,15 @@ const UserProfileComponent: React.FC = () => {
                   <div className="flex justify-center">
                     <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
                       <span className="text-2xl">💰</span>
-                      {user?.type === "admin" && (
+                      {authUser?.type === "admin" && (
                       <div>
                         <p className="text-sm text-gray-500">Total Donado a Adopta un Michi</p>
                         <p className="font-medium text-gray-900">
-                          {user.type === 'admin' ? `$${totalDonations.toLocaleString()}` : '$0'}
+                          {authUser.type === 'admin' ? `$${totalDonations.toLocaleString()}` : '$0'}
                         </p>
                       </div>
                       )}
-                      {user?.type === "regular" && (
+                      {authUser?.type === "regular" && (
                           <div>
                             <p className="text-sm text-gray-500">Total Donado por ti</p>
                             <p className="font-medium text-gray-900">
