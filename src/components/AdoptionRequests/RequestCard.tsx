@@ -67,6 +67,9 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, catDetails }) => {
                             <strong>Edad:</strong> {catDetails.edad} años
                         </p>
                         <p className="text-sm text-gray-600">
+                            <strong>Estado de salud:</strong> {catDetails.estado}
+                        </p>
+                        <p className="text-sm text-gray-600">
                             <strong>Condición:</strong> {catDetails.condicion}
                         </p>
                     </div>

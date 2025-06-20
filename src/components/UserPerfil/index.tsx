@@ -7,16 +7,18 @@ import BackButton from '../general/BackButton';
 //import UserInfo from '../UserInfo';
 
 import  { useAuth } from '../../contexts/AuthContext';
+import { fetchDonations } from '../../utils/db'; // Asegúrate de que esta función esté implementada correctamente
+
 
 
 const UserProfileComponent: React.FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(0); // Para forzar re-renders
-  const { user: authUser, setUser: setAuthUser } = useAuth();
-  
-  // Cargar datos del usuario solo una vez al montar el componente
+  const [totalDonations, setTotalDonations] = useState<number>(0);
+
+  const { user: authUser } = useAuth();
+  // Simular datos del usuario - en producción esto vendría de un contexto de autenticación o API
   useEffect(() => {
     if (authUser === null) {
       navigate('/');
@@ -34,20 +36,45 @@ const UserProfileComponent: React.FC = () => {
         adoptionsManaged: authUser.type === 'admin' ? 0 : 0,
         totalDonated: authUser.type === 'admin' ? 0 : 0,
       };
-      setAuthUser(enhancedUser);
-    }
-  }, [authUser?.id, setAuthUser]); // Solo se ejecuta cuando cambia el ID del usuario
+      
+      setUser(userProfile);
+      setIsLoading(false);
+      console.log('Usuario cargado:', userProfile);
+    
+    
+  }, [navigate, authUser]);
 
-  // Detectar cambios en authUser para depuración
   useEffect(() => {
-    if (authUser) {
-      console.log('🔄 authUser actualizado:', {
-        fullName: authUser.fullName,
-        email: authUser.email,
-        profilePicture: authUser.profilePicture
-      });
+    const fetchTotalDonations = async () => {
+      if (user?.type === 'admin') {
+        try {
+          const donations = await fetchDonations();
+          const total = donations.reduce((sum, donation) => sum + donation.monto, 0);
+          setTotalDonations(total);
+        } catch (error) {
+          console.error('Error al obtener las donaciones:', error);
+          setTotalDonations(0);
+        }
+      }
+    };
+
+    fetchTotalDonations();
+  }, [user]);
+
+  useEffect(() => {
+    if (user?.type === "regular") {
+      fetchDonations()
+          .then((donations) => {
+            const userDonations = donations.filter((donation) => donation.email === user.email);
+            const total = userDonations.reduce((sum, donation) => sum + donation.monto, 0);
+            setTotalDonations(total);
+          })
+          .catch((error) => {
+            console.error("Error al cargar las donaciones del usuario:", error);
+          });
     }
-  }, [authUser?.fullName, authUser?.email, authUser?.profilePicture]);
+  }, [user]);
+
 
   const handleEditProfile = () => {
     setIsEditingProfile(true);
@@ -279,12 +306,23 @@ const UserProfileComponent: React.FC = () => {
                   <div className="flex justify-center">
                     <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
                       <span className="text-2xl">💰</span>
+                      {user?.type === "admin" && (
                       <div>
-                        <p className="text-sm text-gray-500">Total Donado</p>
+                        <p className="text-sm text-gray-500">Total Donado a Adopta un Michi</p>
                         <p className="font-medium text-gray-900">
-                          {authUser.totalDonated !== undefined ? `$${authUser.totalDonated.toLocaleString()}` : 'No disponible'}
+                          {user.type === 'admin' ? `$${totalDonations.toLocaleString()}` : '$0'}
                         </p>
                       </div>
+                      )}
+                      {user?.type === "regular" && (
+                          <div>
+                            <p className="text-sm text-gray-500">Total Donado por ti</p>
+                            <p className="font-medium text-gray-900">
+                              {`$${totalDonations.toLocaleString()}`}
+                            </p>
+                          </div>
+                      )}
+
                     </div>
                   </div>
                 </div>

@@ -4,7 +4,6 @@ import { createCat } from "../../utils/db";
 
 const CrearGato = () => {
   const [formData, setFormData] = useState({
-    
     nombre: "",
     edad: 0,
     descripcion: "",
@@ -20,7 +19,7 @@ const CrearGato = () => {
   const navigate = useNavigate();
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -42,120 +41,177 @@ const CrearGato = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-purple-300 via-purple-400 to-purple-600 px-6 py-12">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white bg-opacity-90 backdrop-blur-md rounded-3xl shadow-2xl p-10 max-w-lg w-full space-y-8 border-4 border-purple-700"
-      >
-        <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 via-purple-900 to-purple-800 text-center mb-10">
-          Crear Nuevo Gato
-        </h2>
-
-        <input
-          name="nombre"
-          placeholder="Nombre"
-          value={formData.nombre}
-          onChange={handleChange}
-          className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
-          required
-        />
-
-        <input
-          name="edad"
-          type="number"
-          placeholder="Edad"
-          value={formData.edad}
-          onChange={handleChange}
-          min={0}
-          className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
-          required
-        />
-
-        <textarea
-          name="descripcion"
-          placeholder="Descripción"
-          value={formData.descripcion}
-          onChange={handleChange}
-          rows={4}
-          className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none resize-none text-lg font-medium"
-          required
-        />
-
-        <select
-          name="estado"
-          value={formData.estado}
-          onChange={handleChange}
-          className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-purple-300 via-purple-400 to-purple-600 px-6 py-12">
+        <form
+            onSubmit={handleSubmit}
+            className="bg-white bg-opacity-90 backdrop-blur-md rounded-3xl shadow-2xl p-10 max-w-lg w-full space-y-6 border-4 border-purple-700"
         >
-          <option value="Bueno">Bueno</option>
-          <option value="Regular">Regular</option>
-          <option value="Critico">Crítico</option>
-        </select>
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 via-purple-900 to-purple-800 text-center mb-10">
+            Crear Nuevo Gato
+          </h2>
 
-        <input
-          name="condicion"
-          placeholder="Condición especial (opcional)"
-          value={formData.condicion}
-          onChange={handleChange}
-          className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
-        />
+          <div>
+            <label htmlFor="nombre" className="block font-bold mb-1">
+              Nombre del Gato
+            </label>
+            <input
+                id="nombre"
+                name="nombre"
+                placeholder="Nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+                className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
+                required
+            />
+          </div>
 
-        <select
-          name="disponibilidad"
-          value={formData.disponibilidad}
-          onChange={handleChange}
-          className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
-        >
-          <option value="disponible">Disponible</option>
-          <option value="en proceso">En proceso</option>
-          <option value="adoptado">Adoptado</option>
-        </select>
+          <div>
+            <label htmlFor="edad" className="block font-bold mb-1">
+              Edad (en años)
+            </label>
+            <input
+                id="edad"
+                name="edad"
+                type="number"
+                placeholder="Edad"
+                value={formData.edad}
+                onChange={handleChange}
+                min={0}
+                className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
+                required
+            />
+          </div>
 
-        <input
-          name="fecha_ingreso"
-          type="date"
-          value={formData.fecha_ingreso}
-          onChange={handleChange}
-          className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
-          required
-        />
+          <div>
+            <label htmlFor="descripcion" className="block font-bold mb-1">
+              Descripción
+            </label>
+            <textarea
+                id="descripcion"
+                name="descripcion"
+                placeholder="Descripción"
+                value={formData.descripcion}
+                onChange={handleChange}
+                rows={4}
+                className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none resize-none text-lg font-medium"
+                required
+            />
+          </div>
 
-        <input
-          name="imagen"
-          placeholder="URL Imagen principal"
-          value={formData.imagen}
-          onChange={handleChange}
-          className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
-        />
+          <div>
+            <label htmlFor="estado" className="block font-bold mb-1">
+              Estado de Salud
+            </label>
+            <select
+                id="estado"
+                name="estado"
+                value={formData.estado}
+                onChange={handleChange}
+                className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
+            >
+              <option value="Bueno">Bueno</option>
+              <option value="Regular">Regular</option>
+              <option value="Critico">Crítico</option>
+            </select>
+          </div>
 
-        <input
-          name="imagen2"
-          placeholder="URL Imagen secundaria"
-          value={formData.imagen2}
-          onChange={handleChange}
-          className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
-        />
+          <div>
+            <label htmlFor="condicion" className="block font-bold mb-1">
+              Condición Especial (Opcional)
+            </label>
+            <input
+                id="condicion"
+                name="condicion"
+                placeholder="Condición especial"
+                value={formData.condicion}
+                onChange={handleChange}
+                className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
+            />
+          </div>
 
-        <input
-          name="imagen3"
-          placeholder="URL Imagen adicional"
-          value={formData.imagen3}
-          onChange={handleChange}
-          className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
-        />
+          <div>
+            <label htmlFor="disponibilidad" className="block font-bold mb-1">
+              Disponibilidad
+            </label>
+            <select
+                id="disponibilidad"
+                name="disponibilidad"
+                value={formData.disponibilidad}
+                onChange={handleChange}
+                className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
+            >
+              <option value="disponible">Disponible</option>
+              <option value="en proceso">En proceso</option>
+              <option value="adoptado">Adoptado</option>
+            </select>
+          </div>
 
-        <button
-          type="submit"
-          className="w-full py-4 rounded-full bg-gradient-to-r from-purple-700 via-purple-900 to-purple-800 text-white font-extrabold text-lg shadow-lg hover:shadow-purple-600 transition duration-300"
-        >
-          Crear Gato
-        </button>
-      </form>
-    </div>
+          <div>
+            <label htmlFor="fecha_ingreso" className="block font-bold mb-1">
+              Fecha de Ingreso
+            </label>
+            <input
+                id="fecha_ingreso"
+                name="fecha_ingreso"
+                type="date"
+                value={formData.fecha_ingreso}
+                onChange={handleChange}
+                className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
+                required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="imagen" className="block font-bold mb-1">
+              URL de Imagen Principal
+            </label>
+            <input
+                id="imagen"
+                name="imagen"
+                placeholder="URL Imagen principal"
+                value={formData.imagen}
+                onChange={handleChange}
+                className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="imagen2" className="block font-bold mb-1">
+              URL de Imagen Secundaria
+            </label>
+            <input
+                id="imagen2"
+                name="imagen2"
+                placeholder="URL Imagen secundaria"
+                value={formData.imagen2}
+                onChange={handleChange}
+                className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="imagen3" className="block font-bold mb-1">
+              URL de Imagen Adicional
+            </label>
+            <input
+                id="imagen3"
+                name="imagen3"
+                placeholder="URL Imagen adicional"
+                value={formData.imagen3}
+                onChange={handleChange}
+                className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 focus:border-purple-800 focus:ring-4 focus:ring-purple-300 transition outline-none text-lg font-medium"
+            />
+          </div>
+
+          <button
+              type="submit"
+              className="w-full py-4 rounded-full bg-gradient-to-r from-purple-700 via-purple-900 to-purple-800 text-white font-extrabold text-lg shadow-lg hover:shadow-purple-600 transition duration-300"
+          >
+            Crear Gato
+          </button>
+        </form>
+      </div>
   );
 };
 
 export default CrearGato;
-
-
-

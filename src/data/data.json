@@ -167,7 +167,7 @@
       "phone": "3113524969",
       "email": "joruedam@unal.edu.co",
       "message": "",
-      "status": "rechazada"
+      "status": "pendiente"
     },
     {
       "id": "60a05ee0-d420-4539-ace3-c29aa7028c65",
@@ -186,6 +186,53 @@
       "email": "joruedam@unal.edu.co",
       "message": "",
       "status": "pendiente"
+    }
+  ],
+  "donaciones": [
+    {
+      "id": "485000fd-09fb-412b-8271-a6cc610fd3cd",
+      "email": "admin@unal.edu.co",
+      "monto": 20000,
+      "nombre": "Julian",
+      "tarjeta": "4111111111111111",
+      "fecha_tarjeta": "12/50",
+      "cvv": "123"
+    },
+    {
+      "id": "f66f2147-c9c8-4b51-8a50-cc3a83014d2e",
+      "email": "admin@unal.edu.co",
+      "monto": 20000,
+      "nombre": "Julian",
+      "tarjeta": "4111111111111111",
+      "fecha_tarjeta": "12/29",
+      "cvv": "123"
+    },
+    {
+      "id": "6044b083-b3ac-4edb-b5bb-019b32f27a85",
+      "email": "admin@unal.edu.co",
+      "monto": 20000,
+      "nombre": "Julian",
+      "tarjeta": "4111111111111111",
+      "fecha_tarjeta": "12/85",
+      "cvv": "123"
+    },
+    {
+      "id": "f7ce6695-f93e-42d9-9ee2-bddbe55e0859",
+      "email": "admin@unal.edu.co",
+      "monto": 10000,
+      "nombre": "Julian",
+      "tarjeta": "4111111111111111",
+      "fecha_tarjeta": "12/25",
+      "cvv": "123"
+    },
+    {
+      "id": "940eab76-d325-4d04-89ac-87a4a310c93a",
+      "email": "julian@unal.edu.co",
+      "monto": 30000,
+      "nombre": "Julian",
+      "tarjeta": "4111111111111111",
+      "fecha_tarjeta": "12/85",
+      "cvv": "123"
     }
   ]
 }

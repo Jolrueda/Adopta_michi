@@ -64,18 +64,23 @@ const Banner: React.FC = () => {
                         </button>
                     </>
                 )}
+                {user?.type === "regular" && (
+                    <>
+                        <button
+                            onClick={goToDonacion}
+                            className="w-full md:w-auto bg-purple-700 hover:bg-purple-800 text-white font-semibold px-6 py-2 rounded-lg shadow transition-colors duration-200"
+                        >
+                            Donar
+                        </button>
+                    </>
+                )}
                 <button
                     onClick={goToProfile}
                     className="w-full md:w-auto bg-purple-700 hover:bg-purple-800 text-white font-semibold px-6 py-2 rounded-lg shadow transition-colors duration-200"
                 >
                     Mi Perfil
                 </button>
-                <button
-                    onClick={goToDonacion}
-                    className="w-full md:w-auto bg-purple-700 hover:bg-purple-800 text-white font-semibold px-6 py-2 rounded-lg shadow transition-colors duration-200"
-                >
-                    Donar
-                </button>
+
                 <button
                     onClick={handleLogout}
                     className="w-full md:w-auto bg-white text-purple-500 font-semibold px-6 py-2 rounded-lg shadow hover:bg-purple-100"
