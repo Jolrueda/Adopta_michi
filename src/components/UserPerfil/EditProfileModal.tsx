@@ -43,8 +43,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
     if (!formData.email.trim()) {
       newErrors.email = 'El email es requerido';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'El formato del email no es válido';
+    } else if (!/^[^\s@]+@unal\.edu\.co$/i.test(formData.email)) {
+      newErrors.email = 'El correo debe pertenecer al dominio @unal.edu.co';
     }
 
     if (formData.profilePicture && !/^https?:\/\/.+/.test(formData.profilePicture)) {
@@ -113,7 +113,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 onClick={onClose}
                 className="text-white hover:text-gray-200 transition-colors"
               >
-                <span className="text-2xl">&times;</span>
+                <span className="w-8 h-8 flex items-center justify-center text-xl leading-none bg-red-600 text-white rounded-full transform transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-90">&times;</span>
               </button>
             </div>
           </div>
@@ -176,7 +176,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="tu@email.com"
+                placeholder="usuario@unal.edu.co"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">{errors.email}</p>

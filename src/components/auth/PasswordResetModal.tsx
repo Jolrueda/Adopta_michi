@@ -19,6 +19,12 @@ interface PasswordResetModalProps {
 
 type ResetStep = 'email' | 'verification' | 'newPassword' | 'success';
 
+const isValidPassword = (password: string) => {
+  // Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  return regex.test(password);
+};
+
 const PasswordResetModal: React.FC<PasswordResetModalProps> = ({ isOpen, onClose }) => {
   const [step, setStep] = useState<ResetStep>('email');
   const [email, setEmail] = useState('');
@@ -103,8 +109,8 @@ const PasswordResetModal: React.FC<PasswordResetModalProps> = ({ isOpen, onClose
     setIsLoading(true);
     setError(null);
 
-    if (newPassword.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres.');
+    if (!isValidPassword(newPassword)) {
+      setError('La contraseña debe tener mínimo 8 caracteres, incluir mayúsculas, minúsculas, números y al menos un carácter especial.');
       setIsLoading(false);
       return;
     }
@@ -314,7 +320,7 @@ const PasswordResetModal: React.FC<PasswordResetModalProps> = ({ isOpen, onClose
                   Nueva contraseña
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  Ingresa tu nueva contraseña. Debe tener al menos 6 caracteres.
+                  Ingresa tu nueva contraseña. Debe tener mínimo 8 caracteres, e incluir mayúsculas, minúsculas, números y caracteres especiales.
                 </p>
               </div>
 
