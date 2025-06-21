@@ -28,7 +28,7 @@ const Donacion: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const amounts: number[] = [10000, 20000, 50000];
+  const amounts: number[] = [5000,10000, 20000, 50000];
 
   const handleAmountClick = (amount: number) => {
     setSelectedAmount(amount);
