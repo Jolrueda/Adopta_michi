@@ -36,6 +36,13 @@
 - **Actualización automática** del estado del gato tras la solicitud
 - Interfaz intuitiva con iconos y retroalimentación visual
 
+### 📄 **Sistema de Doanción**
+- **Formulario de donación** con validación
+- Campos requeridos: monto, nombre, numero de tarjeta, fecha de vencimiento de la tarjeta, CVV
+- **Validación automática** de la tarjeta
+- **Actualización automática** de la donacion
+- Interfaz intuitiva con iconos y retroalimentación visual
+
 ### 🎨 **Diseño y Experiencia de Usuario**
 - **Diseño completamente responsivo** adaptado a todos los dispositivos
 - **UI/UX moderna** con Tailwind CSS
@@ -51,19 +58,22 @@ Adopta_michi/
 ├── src/
 │   ├── assets/                      # Recursos multimedia
 │   ├── components/                  # Componentes React organizados por funcionalidad
-│   │   ├── auth/                    # Sistema de autenticación
-│   │   │   ├── AuthLayout.tsx       # Layout principal de auth
-│   │   │   ├── RegisterForm.tsx     # Formulario de registro
-│   │   │   ├── LoginForm.tsx        # Formulario de login
+│   │   ├── AdoptionRequest/         # Sistema de gestion de solicitudes de adopción
+│   │   │   ├── AdoptionRequestPage.tsx   # Layout principal de pagina de gestion de solicitudes
+│   │   │   └── RequestCard.tsx     # Cards de solicitudes de adopción
+│   │   ├── auth/                   # Sistema de autenticación
+│   │   │   ├── AuthLayout.tsx      # Layout principal de auth
+│   │   │   ├── RegisterForm.tsx    # Formulario de registro
+│   │   │   ├── LoginForm.tsx       # Formulario de login
 │   │   │   └── index.tsx           # Exportaciones del módulo
-│   │   ├── general/                 # Componentes generales
+│   │   ├── general/                # Componentes generales
 │   │   │   └── Banner.tsx          # Banner principal
-│   │   ├── visualizacion/           # Página principal y listados
+│   │   ├── visualizacion/          # Página principal y listados
 │   │   │   ├── MainPage.tsx        # Página principal
 │   │   │   ├── CatList.tsx         # Lista de gatos
 │   │   │   ├── FilterBar.tsx       # Barra de filtros
 │   │   │   └── Pagination.tsx      # Componente de paginación
-│   │   ├── CatProfile/              # Perfil detallado de gatos
+│   │   ├── CatProfile/             # Perfil detallado de gatos
 │   │   │   ├── index.tsx           # Componente principal
 │   │   │   ├── AdoptionForm.tsx    # Formulario de adopción
 │   │   │   ├── ImageGallery.tsx    # Galería de imágenes
@@ -72,9 +82,18 @@ Adopta_michi/
 │   │   │   ├── PageHeader.tsx      # Encabezado de página
 │   │   │   ├── Breadcrumb.tsx      # Navegación breadcrumb
 │   │   │   └── AdoptionButton.tsx  # Botón de adopción
-│   │   └── UserPerfil/              # Perfil de usuario (en desarrollo)
+│   │   ├── CrearGato/              # Sistema de creación de perfil de gato (solo admins)
+│   │   │   └── CrearGato.tsx       # Formilario de creacion de gato
+│   │   ├── Donaciones/             # Sistema de donación
+│   │   │   ├── Donacion.tsx        # Layout principal de pagina de donación
+│   │   │   └── GraciasDonacion.tsx # Pagina de agradecimiento postdonacion
+│   │   └── UserPerfil/             # Perfil de usuario 
+│   │       ├── EditProfileModal.tsx  # Modal para edicion de pefil
+│   │       └── index.tsx           # Perfil del usuario personalizado para perfiles regulares y admins
 │   ├── data/
 │   │   └── data.json               # Base de datos simulada con usuarios y gatos
+│   ├── context/
+│   │   └── AuthContext.tsx         # Manejo del contexto de autenticación (sesión activa)
 │   ├── types/                      # Definiciones de tipos TypeScript
 │   ├── utils/
 │   │   └── db.ts                   # Utilidades para manejo de datos
@@ -161,6 +180,14 @@ Adopta_michi/
 3. Visualización del perfil detallado
 4. Solicitud de adopción con formulario validado
 5. Actualización automática del estado
+6. Administradores gestionan la donación
+
+### **Proceso de Donación**
+1. Pagina de donación accedida por el botón "Donar" desde la pagina principal
+2. Llenar toda la información necesaria en el formulario de donación
+3. Envio de donación
+4. Visualización del total donado por el usuario en su peril
+   (Visualización del total donado a la pagina en los perfiles de admins)
 
 ## 🔧 Scripts disponibles
 
@@ -176,10 +203,13 @@ npm run start:json-server  # Inicia el servidor JSON en puerto 3001
 {
   "id": "string",
   "fullName": "string",
-  "email": "string@unal.edu.co",
+  "email": "string",
   "password": "string",
-  "type": "regular" | "admin"
-}
+  "type": "regular" | "admin",
+  "createdAt": "Date",
+  "totalDonated": "number",
+  "profilePicture": "string"
+  }
 ```
 
 ### **Gatos**
@@ -196,6 +226,32 @@ npm run start:json-server  # Inicia el servidor JSON en puerto 3001
   "imagen": "url",
   "imagen2": "url",
   "imagen3": "url"
+}
+```
+
+### **AdoptionRequests**
+```json
+{
+  "id": "string",
+  "catId": "string",
+  "name": "string",
+  "phone": "number",
+  "email": "string",
+  "message": "string",
+  "status": "pendiente" | "aceptada" | "rechazada"
+}
+```
+
+### **donaciones**
+```json
+{
+  "id": "string",
+  "email": "string",
+  "monto": "number",
+  "nombre": "string",
+  "tarjeta": "number",
+  "fecha_tarjeta": "string",
+  "cvv": "number"
 }
 ```
 
