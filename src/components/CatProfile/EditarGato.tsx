@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { Cat } from "../../types/visualizacion/typesCat";
 
-
 interface EditCatModalProps {
   cat: Cat | null;
   onClose: () => void;
@@ -13,12 +12,12 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
     id: "",
     nombre: "",
     edad: 0,
-    estado: "Bueno" as "Bueno" | "Regular" | "Critico",
+    estado: "Bueno",
     descripcion: "",
     imagen: "",
     imagen2: "",
     imagen3: "",
-    disponibilidad: "disponible" as "disponible" | "adoptado" | "en proceso",
+    disponibilidad: "disponible",
     condicion: "Sin condiciones especiales",
     fecha_ingreso: new Date().toISOString(),
     id_gato: ""
@@ -99,9 +98,9 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
             className="w-full border p-2 rounded mt-1"
           >
             <option value="">Seleccionar</option>
-            <option value="Disponible">Disponible</option>
-            <option value="Adoptado">Adoptado</option>
-            <option value="En tratamiento">En tratamiento</option>
+            <option value="Bueno">Bueno</option>
+            <option value="Regular">Regular</option>
+            <option value="Critico">Crítico</option>
           </select>
         </label>
 
@@ -109,8 +108,30 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
           Imagen (URL):
           <input
             type="text"
-            name="imagenUrl"
+            name="imagen"
             value={formData.imagen}
+            onChange={handleChange}
+            className="w-full border p-2 rounded mt-1"
+          />
+        </label>
+
+        <label className="block mb-2">
+          Imagen 2 (URL):
+          <input
+            type="text"
+            name="imagen2"
+            value={formData.imagen2}
+            onChange={handleChange}
+            className="w-full border p-2 rounded mt-1"
+          />
+        </label>
+
+        <label className="block mb-2">
+          Imagen 3 (URL):
+          <input
+            type="text"
+            name="imagen3"
+            value={formData.imagen3}
             onChange={handleChange}
             className="w-full border p-2 rounded mt-1"
           />
