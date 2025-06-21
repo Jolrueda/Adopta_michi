@@ -36,7 +36,7 @@
 - **Actualización automática** del estado del gato tras la solicitud
 - Interfaz intuitiva con iconos y retroalimentación visual
 
-### 📄 **Sistema de Doanción**
+### 💰 **Sistema de Donación**
 - **Formulario de donación** con validación
 - Campos requeridos: monto, nombre, numero de tarjeta, fecha de vencimiento de la tarjeta, CVV
 - **Validación automática** de la tarjeta
