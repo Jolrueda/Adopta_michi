@@ -93,7 +93,7 @@
     {
       "id": "a342",
       "nombre": "Tom",
-      "edad": -1,
+      "edad": 2,
       "descripcion": "Pequeño y travieso.",
       "estado": "Regular",
       "fecha_ingreso": "2023-09-10",
