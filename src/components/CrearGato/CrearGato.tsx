@@ -25,7 +25,7 @@ const CrearGato = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "edad" ? Number(value) : value,
     }));
   };
 
@@ -48,6 +48,13 @@ const CrearGato = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validar edad positiva
+    if (formData.edad < 0) {
+      alert("La edad no puede ser negativa.");
+      return;
+    }
+
     try {
       await createCat(formData);
       alert("Gato creado con éxito");
@@ -60,11 +67,15 @@ const CrearGato = () => {
 
   return (
     <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-2xl mt-10">
-      <h2 className="text-center text-2xl font-bold text-purple-700 mb-6">Crear Nuevo Gato</h2>
+      <h2 className="text-center text-2xl font-bold text-purple-700 mb-6">
+        Crear Nuevo Gato
+      </h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {/* Nombre */}
         <div>
-          <label htmlFor="nombre" className="block font-bold mb-1">Nombre del Gato</label>
+          <label htmlFor="nombre" className="block font-bold mb-1">
+            Nombre del Gato
+          </label>
           <input
             id="nombre"
             name="nombre"
@@ -77,11 +88,14 @@ const CrearGato = () => {
 
         {/* Edad */}
         <div>
-          <label htmlFor="edad" className="block font-bold mb-1">Edad (en años)</label>
+          <label htmlFor="edad" className="block font-bold mb-1">
+            Edad (en años)
+          </label>
           <input
             id="edad"
             name="edad"
             type="number"
+            min="0"
             value={formData.edad}
             onChange={handleChange}
             className="w-full px-5 py-3 rounded-xl border-2 border-purple-500 text-lg font-medium"
@@ -91,7 +105,9 @@ const CrearGato = () => {
 
         {/* Descripción */}
         <div>
-          <label htmlFor="descripcion" className="block font-bold mb-1">Descripción</label>
+          <label htmlFor="descripcion" className="block font-bold mb-1">
+            Descripción
+          </label>
           <textarea
             id="descripcion"
             name="descripcion"
@@ -105,7 +121,9 @@ const CrearGato = () => {
 
         {/* Estado */}
         <div>
-          <label htmlFor="estado" className="block font-bold mb-1">Estado de Salud</label>
+          <label htmlFor="estado" className="block font-bold mb-1">
+            Estado de Salud
+          </label>
           <select
             id="estado"
             name="estado"
@@ -121,7 +139,9 @@ const CrearGato = () => {
 
         {/* Condición */}
         <div>
-          <label htmlFor="condicion" className="block font-bold mb-1">Condición Especial (Opcional)</label>
+          <label htmlFor="condicion" className="block font-bold mb-1">
+            Condición Especial (Opcional)
+          </label>
           <input
             id="condicion"
             name="condicion"
@@ -133,7 +153,9 @@ const CrearGato = () => {
 
         {/* Disponibilidad */}
         <div>
-          <label htmlFor="disponibilidad" className="block font-bold mb-1">Disponibilidad</label>
+          <label htmlFor="disponibilidad" className="block font-bold mb-1">
+            Disponibilidad
+          </label>
           <select
             id="disponibilidad"
             name="disponibilidad"
@@ -149,7 +171,9 @@ const CrearGato = () => {
 
         {/* Fecha ingreso */}
         <div>
-          <label htmlFor="fecha_ingreso" className="block font-bold mb-1">Fecha de Ingreso</label>
+          <label htmlFor="fecha_ingreso" className="block font-bold mb-1">
+            Fecha de Ingreso
+          </label>
           <input
             id="fecha_ingreso"
             name="fecha_ingreso"
@@ -163,43 +187,80 @@ const CrearGato = () => {
 
         {/* Imagen 1 */}
         <div>
-          <label className="block font-bold mb-1">Imagen Principal</label>
-          <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "imagen")} />
+          <label className="block font-bold mb-1 cursor-pointer bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 inline-block" htmlFor="imagen">
+            Seleccionar Imagen
+          </label>
+          <input
+            id="imagen"
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleImageUpload(e, "imagen")}
+            className="hidden"
+          />
           {formData.imagen && (
-            <img src={formData.imagen} alt="Preview" className="mt-2 w-[60px] h-[60px] object-cover rounded" />
+            <img
+              src={formData.imagen}
+              alt="Preview"
+              className="mt-2 w-[60px] h-[60px] object-cover rounded cursor-pointer"
+            />
           )}
         </div>
 
         {/* Imagen 2 */}
         <div>
-          <label className="block font-bold mb-1">Imagen Secundaria</label>
-          <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "imagen2")} />
+          <label className="block font-bold mb-1 cursor-pointer bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 inline-block" htmlFor="imagen2">
+            Seleccionar Imagen
+          </label>
+          <input
+            id="imagen2"
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleImageUpload(e, "imagen2")}
+            className="hidden"
+          />
           {formData.imagen2 && (
-            <img src={formData.imagen2} alt="Preview" className="mt-2 w-[60px] h-[60px] object-cover rounded" />
+            <img
+              src={formData.imagen2}
+              alt="Preview"
+              className="mt-2 w-[60px] h-[60px] object-cover rounded cursor-pointer"
+            />
           )}
         </div>
 
         {/* Imagen 3 */}
         <div>
-          <label className="block font-bold mb-1">Imagen Adicional</label>
-          <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "imagen3")} />
+          <label className="block font-bold mb-1 cursor-pointer bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 inline-block" htmlFor="imagen3">
+            Seleccionar Imagen 
+          </label>
+          <input
+            id="imagen3"
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleImageUpload(e, "imagen3")}
+            className="hidden"
+          />
           {formData.imagen3 && (
-            <img src={formData.imagen3} alt="Preview" className="mt-2 w-[60px] h-[60px] object-cover rounded" />
+            <img
+              src={formData.imagen3}
+              alt="Preview"
+              className="mt-2 w-[60px] h-[60px] object-cover rounded cursor-pointer"
+            />
           )}
         </div>
 
         {/* Botón Crear */}
         <button
           type="submit"
-          className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition"
+          className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition cursor-pointer"
         >
           Crear Gato
         </button>
 
-        {/* Botón Volver */}
+        {/* Botón Cancelar */}
         <BackButton
           onClick={() => navigate("/visualizacion/MainPage")}
-          className="mt-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 sm:w-auto"
+          text="Cancelar"
+          className="mt-4 bg-gray-400 hover:bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 sm:w-auto cursor-pointer"
         />
       </form>
     </div>
@@ -207,4 +268,6 @@ const CrearGato = () => {
 };
 
 export default CrearGato;
+
+
 
