@@ -23,7 +23,7 @@
       "fullName": "Arley",
       "email": "dbolivard@unal.edu.co",
       "password": "Btxtah46*.",
-      "type": "regular",
+      "type": "admin",
       "createdAt": "2025-06-17T03:32:37.803Z",
       "adoptionsManaged": 0,
       "totalDonated": 0
@@ -94,7 +94,7 @@
     {
       "id": "a342",
       "nombre": "Tom",
-      "edad": -1,
+      "edad": 2,
       "descripcion": "Pequeño y travieso.",
       "estado": "Regular",
       "fecha_ingreso": "2023-09-10",
