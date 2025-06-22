@@ -35,6 +35,20 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
     }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof Cat) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({
+          ...prev,
+          [field]: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const res = await fetch(`http://localhost:3001/gatos/${formData.id}`, {
@@ -60,7 +74,7 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
   if (!cat) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" onClick={onClose}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-auto" onClick={onClose}>
       <div
         className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg"
         onClick={(e) => e.stopPropagation()}
@@ -104,38 +118,24 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
           </select>
         </label>
 
-        <label className="block mb-2">
-          Imagen (URL):
-          <input
-            type="text"
-            name="imagen"
-            value={formData.imagen}
-            onChange={handleChange}
-            className="w-full border p-2 rounded mt-1"
-          />
-        </label>
-
-        <label className="block mb-2">
-          Imagen 2 (URL):
-          <input
-            type="text"
-            name="imagen2"
-            value={formData.imagen2}
-            onChange={handleChange}
-            className="w-full border p-2 rounded mt-1"
-          />
-        </label>
-
-        <label className="block mb-2">
-          Imagen 3 (URL):
-          <input
-            type="text"
-            name="imagen3"
-            value={formData.imagen3}
-            onChange={handleChange}
-            className="w-full border p-2 rounded mt-1"
-          />
-        </label>
+        {["imagen", "imagen2", "imagen3"].map((field, index) => (
+          <div key={field} className="mb-4">
+            <label className="block mb-1">Imagen {index + 1}:</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileChange(e, field as keyof Cat)}
+              className="w-full border p-2 rounded"
+            />
+            {formData[field as keyof Cat] && (
+              <img
+                src={formData[field as keyof Cat] as string}
+                alt={`Vista previa imagen ${index + 1}`}
+                className="w-24 h-24 object-cover rounded mt-2"
+              />
+            )}
+          </div>
+        ))}
 
         <label className="block mb-2">
           Descripción:
@@ -167,3 +167,5 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
 };
 
 export default EditCatModal;
+
+
