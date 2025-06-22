@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { Cat } from "../../types/visualizacion/typesCat";
 
-
 interface EditCatModalProps {
   cat: Cat | null;
   onClose: () => void;
@@ -13,12 +12,12 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
     id: "",
     nombre: "",
     edad: 0,
-    estado: "Bueno" as "Bueno" | "Regular" | "Critico",
+    estado: "Bueno",
     descripcion: "",
     imagen: "",
     imagen2: "",
     imagen3: "",
-    disponibilidad: "disponible" as "disponible" | "adoptado" | "en proceso",
+    disponibilidad: "disponible",
     condicion: "Sin condiciones especiales",
     fecha_ingreso: new Date().toISOString(),
     id_gato: ""
@@ -34,6 +33,20 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
       ...prev,
       [name]: name === "edad" ? parseInt(value) : value,
     }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof Cat) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({
+          ...prev,
+          [field]: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async () => {
@@ -61,7 +74,7 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
   if (!cat) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" onClick={onClose}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-auto" onClick={onClose}>
       <div
         className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg"
         onClick={(e) => e.stopPropagation()}
@@ -99,22 +112,30 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
             className="w-full border p-2 rounded mt-1"
           >
             <option value="">Seleccionar</option>
-            <option value="Disponible">Disponible</option>
-            <option value="Adoptado">Adoptado</option>
-            <option value="En tratamiento">En tratamiento</option>
+            <option value="Bueno">Bueno</option>
+            <option value="Regular">Regular</option>
+            <option value="Critico">Crítico</option>
           </select>
         </label>
 
-        <label className="block mb-2">
-          Imagen (URL):
-          <input
-            type="text"
-            name="imagenUrl"
-            value={formData.imagen}
-            onChange={handleChange}
-            className="w-full border p-2 rounded mt-1"
-          />
-        </label>
+        {["imagen", "imagen2", "imagen3"].map((field, index) => (
+          <div key={field} className="mb-4">
+            <label className="block mb-1">Imagen {index + 1}:</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileChange(e, field as keyof Cat)}
+              className="w-full border p-2 rounded"
+            />
+            {formData[field as keyof Cat] && (
+              <img
+                src={formData[field as keyof Cat] as string}
+                alt={`Vista previa imagen ${index + 1}`}
+                className="w-24 h-24 object-cover rounded mt-2"
+              />
+            )}
+          </div>
+        ))}
 
         <label className="block mb-2">
           Descripción:
@@ -146,3 +167,5 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
 };
 
 export default EditCatModal;
+
+
