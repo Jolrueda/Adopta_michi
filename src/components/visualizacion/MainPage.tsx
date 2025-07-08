@@ -10,8 +10,9 @@ import type { FilterBarProps } from "../../types/visualizacion/FilterBarProps"; 
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
-  const [cats, setCats] = useState<Cat[]>([]);
-  const [filteredCats, setFilteredCats] = useState<Cat[]>([]);
+  type CatIndexed = Cat & { originalIndex: number };
+  const [cats, setCats] = useState<CatIndexed[]>([]);
+  const [filteredCats, setFilteredCats] = useState<CatIndexed[]>([]);
   const [filters, setFilters] = useState<{
     nombre: string;
     minAge: string;
@@ -31,8 +32,9 @@ const MainPage: React.FC = () => {
   useEffect(() => {
     const loadCats = async () => {
       const data = await fetchCats();
-      setCats(data);
-      setFilteredCats(data);
+      const withIndex = data.map((c, i) => ({ ...c, originalIndex: i }));
+      setCats(withIndex);
+      setFilteredCats(withIndex);
     };
     loadCats();
   }, []);
@@ -64,6 +66,8 @@ const MainPage: React.FC = () => {
       );
     }
 
+    // Mantener orden original
+    filtered.sort((a, b) => a.originalIndex - b.originalIndex);
     setFilteredCats(filtered);
     setCurrentPage(1); // Resetear a página 1 cuando filtros cambian
   };

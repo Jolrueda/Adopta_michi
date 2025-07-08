@@ -3,10 +3,10 @@ import type {Cat} from "../types/visualizacion/typesCat.ts";
 import type { Donation } from '../types/Donaciones/Donation.ts';
 import { v4 as uuidv4 } from "uuid";
 
-const BASE_URL_USERS = 'http://localhost:3001/users';
-const BASE_URL_CATS = 'http://localhost:3001/gatos';
-const BASE_URL_ADOPTION_REQUESTS = 'http://localhost:3001/adoptionRequests';
-const BASE_URL_DONACIONES = "http://localhost:3001/donaciones";
+const BASE_URL_USERS = '/api/auth';
+const BASE_URL_CATS = '/api/cats';
+const BASE_URL_ADOPTION_REQUESTS = '/api/adoptions';
+const BASE_URL_DONACIONES = '/api/donations';
 
 export const getUsers = async (): Promise<User[]> => {
     const response = await fetch(BASE_URL_USERS);
@@ -16,15 +16,8 @@ export const getUsers = async (): Promise<User[]> => {
     return response.json();
 };
 
-export const registerUser = async (user: User): Promise<void> => {
-    const users = await getUsers();
-    const userExists = users.some(u => u.email === user.email);
-
-    if (userExists) {
-        throw new Error('El correo ya está registrado.');
-    }
-
-    const response = await fetch(BASE_URL_USERS, {
+export const registerUser = async (user: { fullName: string; email: string; password: string; type: 'admin' | 'regular' }): Promise<void> => {
+    const response = await fetch(`${BASE_URL_USERS}/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -33,7 +26,8 @@ export const registerUser = async (user: User): Promise<void> => {
     });
 
     if (!response.ok) {
-        throw new Error('Error al registrar el usuario.');
+        const { message } = await response.json().catch(() => ({}));
+        throw new Error(message || 'Error al registrar el usuario.');
     }
 };
 
@@ -42,6 +36,7 @@ export const updateCat = async (catId: string, updatedCat: Partial<Cat>): Promis
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(updatedCat),
     });
@@ -53,34 +48,31 @@ export const updateCat = async (catId: string, updatedCat: Partial<Cat>): Promis
     return response.json();
   };
 
-
 export const loginUser = async (email: string, password: string): Promise<User> => {
-    console.log('loginUser: Intentando conectar a:', `${BASE_URL_USERS}?email=${email}&password=${password}`);
+    const response = await fetch(`${BASE_URL_USERS}/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+    });
 
-    try {
-        const response = await fetch(`${BASE_URL_USERS}?email=${email}&password=${password}`);
-        console.log('loginUser: Respuesta del servidor:', response.status, response.statusText);
-
-        if (!response.ok) {
-            throw new Error('Error al buscar usuario.');
-        }
-
-        const users = await response.json();
-        if (users.length === 0) {
-            throw new Error('Correo o contraseña incorrectos.');
-        }
-        return users[0];
-    } catch (error) {
-        console.error('loginUser: Ocurrió un error durante el inicio de sesión:', error);
-        throw new Error('No se pudo iniciar sesión. Inténtelo nuevamente más tarde.');
+    if (!response.ok) {
+        const { message } = await response.json().catch(() => ({}));
+        throw new Error(message || 'Correo o contraseña incorrectos.');
     }
-};
 
+    const { user, token } = await response.json();
+    if (token) {
+        localStorage.setItem('token', token);
+    }
+    return user;
+};
 
 export const createCat = async (cat: Omit<Cat, 'id' | 'id_gato'>): Promise<Cat> => {
     const response = await fetch(BASE_URL_CATS, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(cat),
     });
   
@@ -119,6 +111,7 @@ export const updateCatAvailability = async (catId: string, disponibilidad: strin
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
+            ...getAuthHeaders(),
         },
         body: JSON.stringify({ disponibilidad }),
     });
@@ -142,6 +135,7 @@ export const submitAdoptionRequest = async (request: {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            ...getAuthHeaders(),
         },
         body: JSON.stringify({ ...request, status: 'pendiente' }), // Agregar status por defecto
     });
@@ -152,14 +146,14 @@ export const submitAdoptionRequest = async (request: {
 };
 
 export const fetchAdoptionRequests = async (): Promise<{ id: string; catId: string; name: string; phone: string; email: string; message: string; status: string; }[]> => {
-    const response = await fetch(BASE_URL_ADOPTION_REQUESTS);
+    const response = await fetch(BASE_URL_ADOPTION_REQUESTS, {
+        headers: { ...getAuthHeaders() },
+    });
     if (!response.ok) {
         throw new Error('Error al obtener las solicitudes de adopción.');
     }
     return response.json();
 };
-
-
 
 export const filterPendingAdoptionRequests = (
     requests: { id: string; catId: string;  name: string; phone: string; email: string; message: string; status: string }[]
@@ -197,6 +191,7 @@ export const acceptAdoptionRequest = async (requestId: string, catId: string): P
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
+            ...getAuthHeaders(),
         },
         body: JSON.stringify({ status: 'aceptada' }),
     });
@@ -209,13 +204,13 @@ export const acceptAdoptionRequest = async (requestId: string, catId: string): P
     await updateCatAvailability(catId, 'adoptado');
 };
 
-
 export const rejectAdoptionRequest = async (requestId: string, catId: string): Promise<void> => {
     // Actualizar el estado de la solicitud a "rechazada"
     const response = await fetch(`${BASE_URL_ADOPTION_REQUESTS}/${requestId}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
+            ...getAuthHeaders(),
         },
         body: JSON.stringify({ status: 'rechazada' }),
     });
@@ -319,7 +314,7 @@ export const clearResetCode = (email: string): void => {
 export const createDonation = async (donation: Omit<Donation, "id">): Promise<Donation> => {
     const response = await fetch(BASE_URL_DONACIONES, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getAuthHeaders() },
         body: JSON.stringify({ id: uuidv4(), ...donation }),
     });
 
@@ -332,7 +327,7 @@ export const createDonation = async (donation: Omit<Donation, "id">): Promise<Do
 
 // Obtener todas las donaciones
 export const fetchDonations = async (): Promise<Donation[]> => {
-    const response = await fetch(BASE_URL_DONACIONES);
+    const response = await fetch(BASE_URL_DONACIONES, { headers: getAuthHeaders() });
     if (!response.ok) {
         throw new Error("Error al obtener las donaciones.");
     }
@@ -341,22 +336,24 @@ export const fetchDonations = async (): Promise<Donation[]> => {
 
 // Función para actualizar datos de un usuario (nombre, email, foto de perfil, etc.)
 export const updateUser = async (userId: string, updatedFields: Partial<User>): Promise<User> => {
-    try {
-        const response = await fetch(`${BASE_URL_USERS}/${userId}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedFields),
-        });
+    const response = await fetch(`/api/auth/profile`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
+        },
+        body: JSON.stringify(updatedFields),
+    });
 
-        if (!response.ok) {
-            throw new Error('Error al actualizar los datos del usuario.');
-        }
-
-        return response.json();
-    } catch (error) {
-        console.error('updateUser: Error al actualizar usuario:', error);
-        throw error;
+    if (!response.ok) {
+        throw new Error('Error al actualizar los datos del usuario.');
     }
+
+    return response.json();
+};
+
+// Helper para añadir el token JWT a las peticiones protegidas
+export const getAuthHeaders = (): Record<string, string> => {
+    const token = localStorage.getItem('token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
 };

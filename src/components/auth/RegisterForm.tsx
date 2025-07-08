@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type {RegisterData, User} from '../../types/Auth/AuthTypes';
+import type { RegisterData } from '../../types/Auth/AuthTypes';
 import { FaUser } from "react-icons/fa6";
 import { AiTwotoneMail } from "react-icons/ai";
 import { FaLock } from "react-icons/fa6";
@@ -30,23 +30,12 @@ const RegisterForm: React.FC = () => {
     if (!validate()) return;
 
     try {
-      // Generar un nuevo ID para el usuario
-      const newUserId = crypto.randomUUID();
-
-      // Crear un nuevo usuario con los campos requeridos
-      const newUser: User = {
-        id: newUserId,
+      await registerUser({
         fullName: data.fullName,
         email: data.email,
         password: data.password,
         type: isAdmin ? 'admin' : 'regular',
-        createdAt: new Date(),
-        profilePicture: undefined, // Por defecto, no se asigna imagen
-        adoptionsManaged: 0, // Solo para admins
-        totalDonated: 0,
-      };
-
-      await registerUser(newUser); // Registrar al nuevo usuario
+      });
       setSuccessMessage('¡Registro exitoso! Ahora puedes iniciar sesión.');
 
       // Reiniciar los datos del formulario

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { Cat } from "../../types/visualizacion/typesCat";
+import { getAuthHeaders } from "../../utils/db";
 
 interface EditCatModalProps {
   cat: Cat | null;
@@ -53,9 +54,12 @@ const EditCatModal: React.FC<EditCatModalProps> = ({ cat, onClose, onUpdate }) =
 
   const handleSubmit = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/gatos/${formData.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch(`/api/cats/${formData.id}`, {
+        method: "PATCH",
+        headers: { 
+          "Content-Type": "application/json",
+          ...getAuthHeaders(),
+        },
         body: JSON.stringify(formData),
       });
 

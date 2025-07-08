@@ -11,6 +11,7 @@ import EditCatModal from './EditarGato';
 import EliminarButton from './EliminarButton';
 
 import { fetchCats } from '../../utils/db';
+import { getAuthHeaders } from '../../utils/db';
 import { useAuth } from '../../contexts/AuthContext'; // Importar el contexto
 import type { Cat } from '../../types/visualizacion/typesCat';
 
@@ -67,8 +68,9 @@ const CatProfile: React.FC = () => {
     if (!confirmar) return;
 
     try {
-      const res = await fetch(`http://localhost:3001/gatos/${cat.id}`, {
+      const res = await fetch(`/api/cats/${cat.id}`, {
         method: 'DELETE',
+        headers: getAuthHeaders(),
       });
 
       if (!res.ok) {
