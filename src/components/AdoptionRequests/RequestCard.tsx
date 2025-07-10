@@ -2,7 +2,7 @@ import React from "react";
 import type { RequestCardProps } from "../../types/adopcion/AdoptionRequest";
 import { acceptAdoptionRequest, rejectAdoptionRequest } from "../../utils/db";
 
-const RequestCard: React.FC<RequestCardProps> = ({ request, catDetails }) => {
+const RequestCard: React.FC<RequestCardProps> = ({ request, catDetails, onActionComplete }) => {
     const handleAccept = async () => {
         try {
             if (!catDetails) {
@@ -10,6 +10,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, catDetails }) => {
                 return;
             }
             await acceptAdoptionRequest(request.id, catDetails.id);
+            onActionComplete?.();
         } catch (error) {
             console.error("Error al aceptar la solicitud:", error);
             alert("Ocurrió un error al aceptar la solicitud.");
@@ -23,6 +24,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, catDetails }) => {
                 return;
             }
             await rejectAdoptionRequest(request.id, catDetails.id);
+            onActionComplete?.();
         } catch (error) {
             console.error("Error al rechazar la solicitud:", error);
             alert("Ocurrió un error al rechazar la solicitud.");

@@ -14,4 +14,5 @@ export type AdoptionRequest = {
 export type RequestCardProps = {
     request: AdoptionRequest;
     catDetails?: Cat;
+    onActionComplete?: () => void;
 }

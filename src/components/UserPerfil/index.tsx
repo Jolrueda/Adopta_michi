@@ -8,8 +8,7 @@ import { FaUserCircle } from 'react-icons/fa';
 //import UserInfo from '../UserInfo';
 
 import  { useAuth } from '../../contexts/AuthContext';
-import { fetchDonations, updateUser } from '../../utils/db'; // Asegúrate de que esta función esté implementada correctamente
-
+import { fetchDonations, updateUser, fetchProfile } from '../../utils/db';
 
 
 const UserProfileComponent: React.FC = () => {
@@ -20,9 +19,32 @@ const UserProfileComponent: React.FC = () => {
   const [forceUpdate, setForceUpdate] = useState(0);
 
   const { user: authUser, setUser } = useAuth();
+
+  // Helper para mostrar nombre: fullName -> parte antes de @ -> "Sin nombre"
+  const getDisplayName = () => {
+    if (!authUser) return 'Sin nombre';
+    if (authUser.fullName && authUser.fullName.trim() !== '') return authUser.fullName;
+    if (authUser.email) {
+      const base = authUser.email.split('@')[0];
+      return base.charAt(0).toUpperCase() + base.slice(1);
+    }
+    return 'Sin nombre';
+  };
+
   // Simular datos del usuario - en producción esto vendría de un contexto de autenticación o API
   useEffect(() => {
+    const refreshProfile = async () => {
+      if (authUser) {
+        try {
+          const fresh = await fetchProfile();
+          setUser({ ...authUser, ...fresh });
+        } catch (e) {
+          console.error('Error refrescando perfil:', e);
+        }
+      }
+    };
 
+    refreshProfile();
     // Usuario autenticado cargado correctamente
     setIsLoading(false);
   }, [navigate, authUser]);
@@ -76,26 +98,28 @@ const UserProfileComponent: React.FC = () => {
     setIsEditingProfile(true);
   };
 
-    const handleSaveProfile = async (updatedUser: Partial<User>) => {
-    console.log('🔄 Guardando cambios del perfil:', updatedUser);
-    
+  const handleSaveProfile = async (updatedFields: Partial<User>) => {
+    console.log('🔄 Actualizando perfil:', Object.keys(updatedFields));
+
     if (authUser) {
       try {
-        // Actualizar en la "base de datos" (json-server)
-        const apiUpdatedUser = await updateUser(authUser.id, {
-          fullName: updatedUser.fullName,
-          email: updatedUser.email,
-          profilePicture: updatedUser.profilePicture,
-        });
+        // Enviar solo los campos realmente modificados
+        const apiUpdatedUser = await updateUser(authUser.id, updatedFields);
 
-        // Fusionar para mantener cualquier campo adicional localmente
-        const updatedAuthUser = {
-          ...authUser,
-          ...apiUpdatedUser,
-        } as User;
+        // Unir para garantizar que todos los campos estén presentes
+        const merged = { ...authUser, ...updatedFields, ...apiUpdatedUser } as User;
+        setUser(merged);
 
-        // Actualizar el contexto de autenticación
-        setUser(updatedAuthUser);
+        // Obtener perfil actualizado definitivo
+        try {
+          const fresh = await fetchProfile();
+          setUser({ ...merged, ...fresh });
+        } catch (e) {
+          console.error('No se pudo refrescar perfil después de actualizar', e);
+        }
+
+        // Incrementar para bust de caché en imagen externa
+        setForceUpdate((p) => p + 1);
       } catch (error) {
         console.error('❌ Error al actualizar usuario en la base de datos:', error);
         // Opcional: mostrar notificación de error
@@ -117,8 +141,7 @@ const UserProfileComponent: React.FC = () => {
       // Cerrar el modal
       setIsEditingProfile(false);
       
-      // Forzar re-renderizado para asegurar que los cambios se reflejen
-      setForceUpdate(prev => prev + 1);
+      // Ya forzamos re-render arriba
       
       // Mostrar confirmación visual
       const notification = document.createElement('div');
@@ -205,7 +228,7 @@ const UserProfileComponent: React.FC = () => {
               >
                 {authUser.profilePicture ? (
                   <img
-                    src={`${authUser.profilePicture}?v=${forceUpdate}`}
+                    src={authUser.profilePicture.startsWith('data:') ? authUser.profilePicture : `${authUser.profilePicture}?v=${forceUpdate}`}
                     alt="Foto de perfil"
                     className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full border-4 border-white bg-white shadow-lg object-cover transition-transform group-hover:scale-105"
                   />
@@ -223,7 +246,7 @@ const UserProfileComponent: React.FC = () => {
             {/* User Info */}
             <div className="text-center mb-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                {authUser.fullName}
+                {getDisplayName()}
               </h2>
               <p className="text-gray-600 text-lg mb-4">{authUser.email}</p>
               
@@ -276,7 +299,7 @@ const UserProfileComponent: React.FC = () => {
                     <span className="text-2xl">👤</span>
                     <div>
                       <p className="text-sm text-gray-500">Nombre Completo</p>
-                      <p className="font-medium text-gray-900">{authUser.fullName}</p>
+                      <p className="font-medium text-gray-900">{getDisplayName()}</p>
                     </div>
                   </div>
                   
@@ -305,7 +328,7 @@ const UserProfileComponent: React.FC = () => {
                     <span className="text-2xl">📅</span>
                     <div>
                       <p className="text-sm text-gray-500">Fecha de Registro</p>
-                      <p className="font-medium text-gray-900">{formatDate(authUser.createdAt)}</p>
+                      <p className="font-medium text-gray-900">{authUser.createdAt ? formatDate(authUser.createdAt) : 'Fecha no disponible'}</p>
                     </div>
                   </div>
                   
@@ -370,7 +393,7 @@ const UserProfileComponent: React.FC = () => {
       {/* Edit Profile Modal */}
       {authUser && (
         <EditProfileModal
-          key={`${authUser.id}-${authUser.fullName}-${authUser.email}-${authUser.profilePicture || 'no-pic'}-${forceUpdate}`}
+          key={`edit-modal-${authUser.id}`}
           user={authUser}
           isOpen={isEditingProfile}
           onClose={handleCloseModal}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { ChangeEvent } from 'react';
 import type { User} from '../../types/Auth/AuthTypes';
 
 interface EditProfileModalProps {
@@ -16,38 +17,27 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 }) => {
   const [formData, setFormData] = useState({
     fullName: user?.fullName || '',
-    email: user?.email || '',
     profilePicture: user?.profilePicture || '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Sincronizar formData con los datos del usuario cuando cambie
+  // Inicializar formData solo cuando se abre el modal por primera vez
   useEffect(() => {
-    if (user) {
+    if (isOpen) {
       setFormData({
-        fullName: user.fullName || '',
-        email: user.email || '',
-        profilePicture: user.profilePicture || '',
+        fullName: user?.fullName || '',
+        profilePicture: user?.profilePicture || '',
       });
     }
-  }, [user]);
+  }, [isOpen]); // Solo depende de isOpen, no de user
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'El nombre completo es requerido';
-    }
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'El email es requerido';
-    } else if (!/^[^\s@]+@unal\.edu\.co$/i.test(formData.email)) {
-      newErrors.email = 'El correo debe pertenecer al dominio @unal.edu.co';
-    }
-
-    if (formData.profilePicture && !/^https?:\/\/.+/.test(formData.profilePicture)) {
+    if (formData.profilePicture && !formData.profilePicture.startsWith('data:') && !/^https?:\/\/.+/.test(formData.profilePicture)) {
       newErrors.profilePicture = 'La URL de la imagen debe ser válida';
     }
 
@@ -66,13 +56,32 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     
     try {
       // Simular llamada a API
-      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      onSave({
-        fullName: formData.fullName,
-        email: formData.email,
-        profilePicture: formData.profilePicture,
-      });
+      
+      // Solo enviar al backend los campos realmente modificados
+      const updated: Partial<User> = {};
+
+      const trimmedName = formData.fullName.trim();
+      if (trimmedName !== (user.fullName || '').trim()) {
+        updated.fullName = trimmedName;
+      }
+
+      if (formData.profilePicture !== (user.profilePicture || '')) {
+        // Validar tamaño de imagen base64 para evitar errores 431
+        if (formData.profilePicture.startsWith('data:') && formData.profilePicture.length > 1000000) {
+          alert('La imagen es demasiado grande. Por favor selecciona una imagen más pequeña.');
+          return;
+        }
+        updated.profilePicture = formData.profilePicture;
+      }
+
+      // Si no hay cambios, simplemente cerrar el modal
+      if (Object.keys(updated).length === 0) {
+        onClose();
+        return;
+      }
+
+      onSave(updated);
       
       onClose();
     } catch (error) {
@@ -87,6 +96,19 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (reader.result) {
+        handleInputChange('profilePicture', reader.result.toString());
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   if (!isOpen) return null;
@@ -123,15 +145,28 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             {/* Profile Picture */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Foto de Perfil (URL)
+                Foto de Perfil (URL o archivo)
               </label>
               <input
                 type="url"
-                value={formData.profilePicture}
+                value={formData.profilePicture.startsWith('data:') ? '' : formData.profilePicture}
                 onChange={(e) => handleInputChange('profilePicture', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 mb-2"
                 placeholder="https://ejemplo.com/mi-foto.jpg"
               />
+              <input
+                id="fileUpload"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <label
+                htmlFor="fileUpload"
+                className="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg cursor-pointer hover:bg-purple-700 transition-colors mb-2"
+              >
+                Seleccionar archivo
+              </label>
               {errors.profilePicture && (
                 <p className="mt-1 text-sm text-red-600">{errors.profilePicture}</p>
               )}
@@ -166,22 +201,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
               )}
             </div>
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Correo Electrónico
-              </label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="usuario@unal.edu.co"
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-              )}
-            </div>
+            {/* Email eliminado: solo se edita nombre y foto */}
           </div>
 
           {/* Footer */}

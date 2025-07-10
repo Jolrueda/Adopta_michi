@@ -49,7 +49,8 @@ const CatProfile: React.FC = () => {
   const handleBackToList = () => navigate('/visualizacion/MainPage');
 
   const handleAdoptionSuccess = () => {
-    setCurrentStatus('Adoptado');
+    // Después de enviar la solicitud la disponibilidad debe mostrar "en proceso"
+    setCurrentStatus('en proceso');
     setShowAdoptionForm(false);
   };
 

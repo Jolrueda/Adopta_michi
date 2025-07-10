@@ -88,11 +88,16 @@ export const fetchCats = async (): Promise<Cat[]> => {
     if (!response.ok) {
         throw new Error('Error al obtener los gatos.');
     }
+
     const data = await response.json();
 
+    // Permitir tanto formato antiguo (array) como nuevo ({ cats, total })
+    const catsArray: Cat[] = Array.isArray(data) ? data : Array.isArray(data.cats) ? data.cats : [];
+
     // Mapear data para que cumpla con el tipo Cat
-    return data.map((cat: Cat) => ({
+    return catsArray.map((cat: any) => ({
         id: String(cat.id || cat.id_gato),
+        id_gato: String(cat.id_gato || cat.id),
         nombre: cat.nombre,
         edad: cat.edad,
         descripcion: cat.descripcion,
@@ -103,11 +108,11 @@ export const fetchCats = async (): Promise<Cat[]> => {
         imagen: cat.imagen,
         imagen2: cat.imagen2,
         imagen3: cat.imagen3,
-    }));
+    })) as Cat[];
 };
 
 export const updateCatAvailability = async (catId: string, disponibilidad: string): Promise<Cat> => {
-    const response = await fetch(`${BASE_URL_CATS}/${catId}`, {
+    const response = await fetch(`${BASE_URL_CATS}/${catId}/availability`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -152,7 +157,13 @@ export const fetchAdoptionRequests = async (): Promise<{ id: string; catId: stri
     if (!response.ok) {
         throw new Error('Error al obtener las solicitudes de adopción.');
     }
-    return response.json();
+
+    const data = await response.json();
+    // Normalizar catId (puede venir como catid desde el backend)
+    return data.map((r: any) => ({
+        ...r,
+        catId: String(r.catId ?? r.catid),
+    }));
 };
 
 export const filterPendingAdoptionRequests = (
@@ -352,8 +363,44 @@ export const updateUser = async (userId: string, updatedFields: Partial<User>): 
     return response.json();
 };
 
+// Obtener perfil del usuario autenticado
+export const fetchProfile = async (): Promise<User> => {
+    const response = await fetch(`${BASE_URL_USERS}/profile`, { headers: getAuthHeaders() });
+    if (!response.ok) {
+        throw new Error('Error al obtener el perfil.');
+    }
+    return response.json();
+};
+
+// Función para limpiar datos corruptos del localStorage
+export const clearCorruptedAuth = (): void => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('authUser');
+    console.log('🧹 Datos de autenticación limpiados');
+};
+
 // Helper para añadir el token JWT a las peticiones protegidas
 export const getAuthHeaders = (): Record<string, string> => {
     const token = localStorage.getItem('token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
+    
+    if (token) {
+        // Si el token es demasiado grande, está corrupto
+        if (token.length > 8000) {
+            console.warn('🚨 Token corrupto detectado, limpiando...', token.length);
+            clearCorruptedAuth();
+            
+            // Mostrar alerta y redirigir suavemente
+            alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 500);
+            return {};
+        }
+        
+        return { Authorization: `Bearer ${token}` };
+    }
+    
+    // Solo log cuando no hay token (situación importante)
+    console.warn('❌ No hay token disponible - usuario no autenticado');
+    return {};
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoReturnDownBackOutline } from "react-icons/io5";
 import {
@@ -6,6 +6,7 @@ import {
     filterPendingAdoptionRequests,
     filterHistoricalAdoptionRequests,
     fetchCats,
+    updateCatAvailability,
 } from "../../utils/db";
 import type { AdoptionRequest } from "../../types/adopcion/AdoptionRequest";
 import type { Cat } from "../../types/visualizacion/typesCat";
@@ -17,35 +18,56 @@ const AdoptionRequestsPage: React.FC = () => {
     const [cats, setCats] = useState<Record<string, Cat>>({});
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const [requests, catsData] = await Promise.all([
-                    fetchAdoptionRequests(),
-                    fetchCats(),
-                ]);
+    const loadData = useCallback(async () => {
+        try {
+            const [requests, catsData] = await Promise.all([
+                fetchAdoptionRequests(),
+                fetchCats(),
+            ]);
 
-                // Filtrar solicitudes pendientes y solicitudes históricas
-                const pendingRequests = filterPendingAdoptionRequests(requests);
-                const historicalRequests = filterHistoricalAdoptionRequests(requests);
+            // Filtrar solicitudes pendientes y solicitudes históricas
+            const pendingRequests = filterPendingAdoptionRequests(requests);
+            const historicalRequests = filterHistoricalAdoptionRequests(requests);
 
-                // Crear un mapa de gatos para facilitar el acceso por ID
-                const catsMap = catsData.reduce((map, cat) => {
-                    map[cat.id] = cat;
-                    return map;
-                }, {} as Record<string, Cat>);
+            // Crear un mapa de gatos para facilitar el acceso por ID
+            const catsMap = catsData.reduce((map, cat) => {
+                map[cat.id] = cat;
+                return map;
+            }, {} as Record<string, Cat>);
 
-                setPendingRequests(pendingRequests);
-                setHistoricalRequests(historicalRequests);
-                setCats(catsMap);
-            } catch (error) {
-                console.error("Error al cargar datos:", error);
-                alert("Hubo un problema al cargar las solicitudes de adopción.");
+            setPendingRequests(pendingRequests);
+            setHistoricalRequests(historicalRequests);
+            setCats(catsMap);
+
+            // Si no hay solicitudes pendientes, restablecer gatos "en proceso" a "disponible"
+            if (pendingRequests.length === 0) {
+                const catsEnProceso = catsData.filter(
+                    (c) => c.disponibilidad === "en proceso"
+                );
+                await Promise.all(
+                    catsEnProceso.map((cat) =>
+                        updateCatAvailability(cat.id, "disponible")
+                    )
+                );
+                // Refrescar gatos en memoria
+                if (catsEnProceso.length) {
+                    const refreshed = await fetchCats();
+                    const refreshedMap = refreshed.reduce((m, c) => {
+                        m[c.id] = c;
+                        return m;
+                    }, {} as Record<string, Cat>);
+                    setCats(refreshedMap);
+                }
             }
-        };
-
-        loadData();
+        } catch (error) {
+            console.error("Error al cargar datos:", error);
+            alert("Hubo un problema al cargar las solicitudes de adopción.");
+        }
     }, []);
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
     return (
         <div className="max-w-4xl mx-auto p-6">
@@ -63,7 +85,7 @@ const AdoptionRequestsPage: React.FC = () => {
             ) : (
                 <ul className="space-y-4">
                     {pendingRequests.map((request) => (
-                        <RequestCard key={request.id} request={request} catDetails={cats[request.catId]} />
+                        <RequestCard key={request.id} request={request} catDetails={cats[String(request.catId)]} onActionComplete={loadData} />
                     ))}
                 </ul>
             )}
@@ -75,7 +97,7 @@ const AdoptionRequestsPage: React.FC = () => {
             ) : (
                 <ul className="space-y-4">
                     {historicalRequests.map((request) => (
-                        <RequestCard key={request.id} request={request} catDetails={cats[request.catId]} />
+                        <RequestCard key={request.id} request={request} catDetails={cats[String(request.catId)]} onActionComplete={loadData} />
                     ))}
                 </ul>
             )}
