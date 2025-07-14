@@ -242,18 +242,28 @@ export const rejectAdoptionRequest = async (requestId: string, catId: string): P
 // Función para verificar si existe un usuario con el email dado
 export const findUserByEmail = async (email: string): Promise<User | null> => {
     try {
-        const response = await fetch(`${BASE_URL_USERS}?email=${email}`);
-        if (!response.ok) {
+        const response = await fetch(`${BASE_URL_USERS}?email=${email}`, {
+            method: 'GET',
+            cache: 'no-store', // evita respuesta 304 del navegador
+        });
+
+        // Si el servidor respondió con error, lanzar excepción
+        if (!response.ok && response.status !== 304) {
             throw new Error('Error al buscar usuario.');
         }
-        
-        const users = await response.json();
-        return users.length > 0 ? users[0] : null;
+
+        const data = await response.json();
+
+        // Asegurarse de que 'data' sea un arreglo o un objeto de usuario
+        const user = Array.isArray(data) ? data[0] : data;
+
+        return user ? user : null;
     } catch (error) {
         console.error('findUserByEmail: Error al buscar usuario:', error);
         throw new Error('No se pudo buscar el usuario.');
     }
 };
+
 
 // Función para actualizar la contraseña de un usuario
 export const updateUserPassword = async (userId: string, newPassword: string): Promise<void> => {
