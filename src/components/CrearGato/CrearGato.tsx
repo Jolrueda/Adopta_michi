@@ -58,7 +58,8 @@ const CrearGato = () => {
     try {
       await createCat(formData);
       alert("Gato creado con éxito");
-      navigate("/visualizacion/MainPage");
+      // Navegar con parámetro para forzar recarga
+      navigate("/visualizacion/MainPage?refresh=true");
     } catch (error) {
       console.error("Error al crear el gato:", error);
       alert("Ocurrió un error al guardar el gato");
@@ -187,7 +188,7 @@ const CrearGato = () => {
 
         {/* Imagen 1 */}
         <div>
-          <label className="block font-bold mb-1 cursor-pointer bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 inline-block" htmlFor="imagen">
+          <label className="inline-block font-bold mb-1 cursor-pointer bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700" htmlFor="imagen">
             Seleccionar Imagen
           </label>
           <input
@@ -208,7 +209,7 @@ const CrearGato = () => {
 
         {/* Imagen 2 */}
         <div>
-          <label className="block font-bold mb-1 cursor-pointer bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 inline-block" htmlFor="imagen2">
+          <label className="font-bold mb-1 cursor-pointer bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 inline-block" htmlFor="imagen2">
             Seleccionar Imagen
           </label>
           <input
@@ -229,7 +230,7 @@ const CrearGato = () => {
 
         {/* Imagen 3 */}
         <div>
-          <label className="block font-bold mb-1 cursor-pointer bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 inline-block" htmlFor="imagen3">
+          <label className="font-bold mb-1 cursor-pointer bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 inline-block" htmlFor="imagen3">
             Seleccionar Imagen 
           </label>
           <input

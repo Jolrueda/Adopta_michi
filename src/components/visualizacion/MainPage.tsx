@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import FilterBar from "./FilterBar";
 import CatList from "./CatList";
 import Pagination from "./Pagination";
@@ -10,6 +10,7 @@ import type { FilterBarProps } from "../../types/visualizacion/FilterBarProps"; 
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   type CatIndexed = Cat & { originalIndex: number };
   const [cats, setCats] = useState<CatIndexed[]>([]);
   const [filteredCats, setFilteredCats] = useState<CatIndexed[]>([]);
@@ -37,7 +38,12 @@ const MainPage: React.FC = () => {
       setFilteredCats(withIndex);
     };
     loadCats();
-  }, []);
+    
+    // Limpiar el parámetro refresh de la URL después de cargar
+    if (searchParams.get('refresh') === 'true') {
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     filterCats();
