@@ -67,7 +67,7 @@ const UserProfileComponent: React.FC = () => {
       if (authUser?.type === 'admin') {
         try {
           const donations = await fetchDonations();
-          const total = donations.reduce((sum, donation) => sum + donation.monto, 0);
+          const total = donations.reduce((sum, donation) => sum + parseFloat(String(donation.monto)), 0);
           setTotalDonations(total);
         } catch (error) {
           console.error('Error al obtener las donaciones:', error);
@@ -84,7 +84,7 @@ const UserProfileComponent: React.FC = () => {
       fetchDonations()
           .then((donations) => {
             const userDonations = donations.filter((donation) => donation.email === authUser.email);
-            const total = userDonations.reduce((sum, donation) => sum + donation.monto, 0);
+            const total = userDonations.reduce((sum, donation) => sum + parseFloat(String(donation.monto)), 0);
             setTotalDonations(total);
           })
           .catch((error) => {

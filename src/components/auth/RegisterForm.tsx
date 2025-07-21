@@ -109,19 +109,6 @@ const RegisterForm: React.FC = () => {
           {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password}</p>}
         </div>
 
-        <div className="mb-1 flex items-center">
-          <input
-              type="checkbox"
-              id="isAdmin"
-              checked={isAdmin}
-              onChange={() => setIsAdmin(!isAdmin)}
-              className="mr-2"
-          />
-          <label htmlFor="isAdmin" className="text-black select-none cursor-pointer">
-            Registrarse como usuario admin
-          </label>
-        </div>
-
         <div className="mb-6 flex items-center">
           <input
               type="checkbox"
