@@ -84,7 +84,8 @@ export const createCat = async (cat: Omit<Cat, 'id' | 'id_gato'>): Promise<Cat> 
   };
 
 export const fetchCats = async (): Promise<Cat[]> => {
-    const response = await fetch(BASE_URL_CATS);
+    // Solicitar un límite alto para obtener todos los gatos
+    const response = await fetch(`${BASE_URL_CATS}?limit=1000`);
     if (!response.ok) {
         throw new Error('Error al obtener los gatos.');
     }
@@ -356,7 +357,7 @@ export const fetchDonations = async (): Promise<Donation[]> => {
 };
 
 // Función para actualizar datos de un usuario (nombre, email, foto de perfil, etc.)
-export const updateUser = async (userId: string, updatedFields: Partial<User>): Promise<User> => {
+export const updateUser = async (updatedFields: Partial<User>): Promise<User> => {
     const response = await fetch(`/api/auth/profile`, {
         method: 'PUT',
         headers: {
