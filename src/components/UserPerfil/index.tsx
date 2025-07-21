@@ -64,33 +64,37 @@ const UserProfileComponent: React.FC = () => {
 
   useEffect(() => {
     const fetchTotalDonations = async () => {
-      if (authUser?.type === 'admin') {
-        try {
-          const donations = await fetchDonations();
-          const total = donations.reduce((sum, donation) => sum + donation.monto, 0);
-          setTotalDonations(total);
-        } catch (error) {
-          console.error('Error al obtener las donaciones:', error);
+      if (!authUser) return;
+
+      try {
+        const donations = await fetchDonations();
+        if (!donations || donations.length === 0) {
           setTotalDonations(0);
+          return;
         }
+        let total = 0;
+
+        if (authUser.type === 'admin') {
+          // Para admin: suma todas las donaciones
+          total = donations.reduce((sum, donation) => {
+            return sum + Number(donation.monto);
+          }, 0);
+        } else if (authUser.type === 'regular') {
+          // Para usuario regular: suma solo sus donaciones
+          const userDonations = donations.filter((donation) => donation.email === authUser.email);
+          total = userDonations.reduce((sum, donation) => {
+            return sum + Number(donation.monto);
+          }, 0);
+        }
+
+        setTotalDonations(total);
+      } catch (error) {
+        console.error('Error al obtener las donaciones:', error);
+        setTotalDonations(0);
       }
     };
 
     fetchTotalDonations();
-  }, [authUser]);
-
-  useEffect(() => {
-    if (authUser?.type === "regular") {
-      fetchDonations()
-          .then((donations) => {
-            const userDonations = donations.filter((donation) => donation.email === authUser.email);
-            const total = userDonations.reduce((sum, donation) => sum + donation.monto, 0);
-            setTotalDonations(total);
-          })
-          .catch((error) => {
-            console.error("Error al cargar las donaciones del usuario:", error);
-          });
-    }
   }, [authUser]);
 
 
@@ -352,23 +356,17 @@ const UserProfileComponent: React.FC = () => {
                   <div className="flex justify-center">
                     <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
                       <span className="text-2xl">💰</span>
-                      {authUser?.type === "admin" && (
                       <div>
-                        <p className="text-sm text-gray-500">Total Donado a Adopta un Michi</p>
+                        <p className="text-sm text-gray-500">
+                          {authUser?.type === "admin" 
+                            ? "Total Donado a Adopta un Michi" 
+                            : "Total Donado por ti"
+                          }
+                        </p>
                         <p className="font-medium text-gray-900">
-                          {authUser.type === 'admin' ? `$${totalDonations.toLocaleString()}` : '$0'}
+                          ${totalDonations.toLocaleString()}
                         </p>
                       </div>
-                      )}
-                      {authUser?.type === "regular" && (
-                          <div>
-                            <p className="text-sm text-gray-500">Total Donado por ti</p>
-                            <p className="font-medium text-gray-900">
-                              {`$${totalDonations.toLocaleString()}`}
-                            </p>
-                          </div>
-                      )}
-
                     </div>
                   </div>
                 </div>
