@@ -357,7 +357,7 @@ export const fetchDonations = async (): Promise<Donation[]> => {
 };
 
 // Función para actualizar datos de un usuario (nombre, email, foto de perfil, etc.)
-export const updateUser = async (updatedFields: Partial<User>): Promise<User> => {
+export const updateUser = async (id: string, updatedFields: Partial<User>): Promise<User> => {
     const response = await fetch(`/api/auth/profile`, {
         method: 'PUT',
         headers: {
